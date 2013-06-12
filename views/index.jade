@@ -1,0 +1,13 @@
+doctype 5
+html(lang="en", ng-app="app")
+  head
+  meta(charset="utf-8")
+  title
+    | Airlin
+  link(rel="stylesheet", href="stylesheets/style.css")
+  script(src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js")
+  script(src="javascripts/app.js")
+  script(src="javascripts/services.js")
+  script(src="javascripts/controllers.js")
+body(ng-controller="PictureFolderCtrl")
+  .container(ng-view)
