@@ -42,7 +42,29 @@ app.get('/login', function(req, res){
 app.get('/home', function(req, res){
   res.render('home');
 });
+app.get('/files', function(req, res){
+  res.render('files');
+});
+app.get('/expiry', function(req, res){
+  res.json({flash:'all is good'});
+  //res.json(401, {flash:'Your session has expired, please log in.'});
+});
+
+
 app.get('/files/pictures', routes.files.files);
+
+app.post('/auth/login', function(req, res){
+  if(req.body.username === 'JumpLink' && req.body.password === '123456') {
+    res.json({username: 'JumpLink'});
+  } else {
+    res.json(500, {flash: 'Invalid user or password'});
+  }
+});
+
+app.get('/auth/logout', function(req, res){
+  //logout();
+  res.json({flash: 'Logged Out!'});
+});
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));

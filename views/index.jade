@@ -5,9 +5,14 @@ html(lang="en", ng-app="app")
   title
     | Airlin
   link(rel="stylesheet", href="stylesheets/style.css")
-  script(src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js")
+    
+  script(src="http://documentcloud.github.io/underscore/underscore.js")
+  script(src="https://ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.min.js")
   script(src="javascripts/app.js")
   script(src="javascripts/services.js")
   script(src="javascripts/controllers.js")
-body(ng-controller="PictureFolderCtrl")
-  .container(ng-view)
+body
+  .container
+    #flash.alert(class="alert-{{flash.type}}", ng-show="flash.message")
+      {{flash.message}}
+    .view(ng-view)

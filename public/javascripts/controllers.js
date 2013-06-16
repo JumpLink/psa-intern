@@ -2,8 +2,8 @@
 
 /* Controllers */
 
-function PictureFolderCtrl($scope) {
-  $scope.pictures = [
+app.controller('FileCtrl', function($scope) {
+    $scope.files = [
 		"Bildschirmfoto vom 2013-06-02 18:17:58.png",
 		"Bildschirmfoto vom 2013-06-02 18:19:40.png",
 		"Bildschirmfoto vom 2013-06-02 18:22:54.png",
@@ -16,18 +16,29 @@ function PictureFolderCtrl($scope) {
 		"arbeit",
 		"privat"
 	];
-}
+});
 
-app.controller('LoginController', function($scope, AuthenticationService) {
+app.controller('LoginController', function($scope, $location, AuthenticationService) {
 	$scope.credentials = { username: "", password: ""};
 
 	$scope.login = function() {
-		AuthenticationService.login($scope.credentials);
+		AuthenticationService.login($scope.credentials).success(function() {
+			$location.path('/files');
+		});
 	};
 });
 
-app.controller('HomeController', function($scope, AuthenticationService) {
+app.controller('HomeController', function($scope, $location, AuthenticationService) {
+
+});
+
+app.controller('FilesController', function($scope, $location, AuthenticationService, expiry) {
+
+	$scope.expiry = expiry.data;
+
 	$scope.logout = function() {
-		AuthenticationService.logout();
+		AuthenticationService.logout().success(function() {
+			$location.path("/login");
+		});
 	}
 });

@@ -1,0 +1,8 @@
+h1 Willkommen
+ul(ng-controller="FileCtrl")
+  .alert(ng-show="expiry.flash")
+    {{ expiry.flash }}
+
+  li(ng-repeat="file in files")
+    {{ file }}
+  button.btn.btn-large.btn-primary.btn-block(ng-click="logout()") Logout

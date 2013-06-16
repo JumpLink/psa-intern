@@ -9,7 +9,7 @@ var fs = require('fs');
 //f = Gio.File(path=process.env['HOME']+'/Bilder/Bildschirmfoto vom 2013-06-02 18:17:58.png');
 
 exports.files = function(req, res){
-	fs.readdir(process.env['HOME']+'/Bilder', function(err, files) {
+	fs.readdir(process.env['HOME'], function(err, files) {
 		res.json(files);
 	});
 	
