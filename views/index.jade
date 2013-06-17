@@ -5,12 +5,14 @@ html(lang="en", ng-app="app")
   title
     | Airlin
   link(rel="stylesheet", href="stylesheets/style.css")
-    
   script(src="http://documentcloud.github.io/underscore/underscore.js")
   script(src="https://ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.min.js")
+  script(src="https://ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular-sanitize.min.js")
   script(src="javascripts/app.js")
   script(src="javascripts/services.js")
   script(src="javascripts/controllers.js")
+  script.
+    angular.module("app").constant('CSRF_TOKEN', '#{csrf_token}');
 body
   .container
     #flash.alert(class="alert-{{flash.type}}", ng-show="flash.message")

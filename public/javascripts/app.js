@@ -1,22 +1,22 @@
 'use strict';
 /* App Module */
-var app = angular.module("app", []).config(function($routeProvider) {
+var app = angular.module("app", ['ngSanitize']).config(function($routeProvider) {
 	$routeProvider.when('/login', {
-		templateUrl: 'login',
+		templateUrl: 'login.html',
 		controller: 'LoginController'
 	});
 
 	$routeProvider.when('/home', {
-		templateUrl: 'home',
+		templateUrl: 'home.html',
 		controller: 'HomeController'
 	});
 
 	$routeProvider.when('/files', {
-		templateUrl: 'files',
+		templateUrl: 'files.html',
 		controller: 'FilesController',
 		resolve: {
-			"expiry" : function($http) {
-				return $http.get('/expiry');
+			files : function(FileService) {
+				return FileService.get();
 			}
 		}
 	});

@@ -34,21 +34,30 @@ app.factory("SessionService", function() {
 	};
 });
 
-app.factory("AuthenticationService", function($http, $location, SessionService, FlashService) {
+app.factory("AuthenticationService", function($http, $sanitize, SessionService, FlashService, CSRF_TOKEN) {
 	var cacheSession = function() {
 		SessionService.set('authenticated', true);
 	};
+
 	var uncacheSession = function() {
 		SessionService.unset('authenticated');
 	};
 
 	var loginError = function(response) {
 		FlashService.show(response.flash, "danger")
-	}
+	};
+
+	var sanitizeCredentials = function(credentials) {
+		return {
+			username: $sanitize(credentials.username),
+			password: $sanitize(credentials.password),
+			_csrf: CSRF_TOKEN
+		}
+	};
 
 	return {
 		login: function(credentials) {
-			var login = $http.post("/auth/login", credentials);
+			var login = $http.post("/auth/login", sanitizeCredentials(credentials));
 			login.success(cacheSession);
 			login.success(FlashService.clear);
 			login.error(loginError);
@@ -63,4 +72,12 @@ app.factory("AuthenticationService", function($http, $location, SessionService, 
 			return SessionService.get('authenticated');
 		}
 	}
-})
+});
+
+app.factory("FileService", function($http) {
+  return {
+    get: function() {
+      return $http.get('/files');
+    }
+  };
+});

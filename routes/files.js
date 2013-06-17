@@ -10,7 +10,8 @@ var fs = require('fs');
 
 exports.files = function(req, res){
 	fs.readdir(process.env['HOME'], function(err, files) {
-		res.json(files);
+		console.log(files);
+		res.json( files  );
 	});
 	
 };
