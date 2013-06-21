@@ -1,0 +1,9 @@
+ul.media-list
+    li.media(ng-repeat="message in messages")
+        a.pull-left(href='#')
+          img.media-object.img-circle(width='64px', height='64px', src='images/placeholder.jpg')
+        .media-body
+          h4.media-heading {{ message.user }}
+          h5 {{ message.time }}
+          p
+            | {{ message.message }}

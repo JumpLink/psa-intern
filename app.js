@@ -5,7 +5,7 @@
 
 var express = require('express')
   , routes = {
-  	files: require('./routes/files')
+  	messages: require('./routes/messages').messages
   }
   , http = require('http')
   , path = require('path')
@@ -80,11 +80,11 @@ app.get('/', function(req, res){
 app.get('/login.html', function(req, res){
   res.render('login');
 });
-app.get('/home.html', function(req, res){
-  res.render('home');
+app.get('/about.html', function(req, res){
+  res.render('about');
 });
 
-app.get('/files', routes.files.files);
+app.get('/messages', routes.messages);
 
 app.post('/auth/login', function(req, res){
 
@@ -116,17 +116,21 @@ app.get('/auth/logout', function(req, res){
 
   // destroy the user's session to log them out
   // will be re-created next request
-  req.session.destroy(function(){
-    res.json({flash: 'Logged Out!', new_csrf_token: req.session._csrf});
-  });
+  // req.session.destroy(function(){
+  //   res.json({flash: 'Logged Out!', new_csrf_token: req.session._csrf});
+  // });
+
+  delete req.session.user;
+  delete req.session.success;
+  res.json({flash: 'Logged Out!'});
  
 });
 
 /**
  * Routes that are only avable if a user is logged in
  */
-app.get('/files.html', restrict, function(req, res){
-  res.render('files');
+app.get('/messages.html', restrict, function(req, res){
+  res.render('messages');
 });
 
 http.createServer(app).listen(app.get('port'), function(){

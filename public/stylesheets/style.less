@@ -63,6 +63,10 @@
 @import "../libraries/bootstrap/less/utilities.less"; // Has to be last to override when necessary
 @import "../libraries/bootstrap/less/responsive-utilities.less";
 
+body {
+	padding-top: 60px;
+}
+
 .form-signin {
 	max-width: 330px;
 	padding: 15px;
@@ -89,5 +93,16 @@
 			.border-top-radius(0);
 			margin-bottom: 10px;
 		}
+	}
+}
+
+.media-list {
+	padding-left: 0;
+}
+
+.navbar {
+	.navbar-text {
+		padding-left: 5px;
+		padding-right: 5px;
 	}
 }

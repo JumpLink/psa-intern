@@ -74,10 +74,10 @@ app.factory("AuthenticationService", function($http, $sanitize, SessionService, 
 	}
 });
 
-app.factory("FileService", function($http) {
+app.factory("MessageService", function($http) {
   return {
     get: function() {
-      return $http.get('/files');
+      return $http.get('/messages');
     }
   };
 });

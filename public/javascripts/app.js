@@ -1,22 +1,24 @@
 'use strict';
 /* App Module */
-var app = angular.module("app", ['ngSanitize']).config(function($routeProvider) {
+var app = angular.module("app", ['ngSanitize']);
+
+app.config(function($routeProvider) {
 	$routeProvider.when('/login', {
 		templateUrl: 'login.html',
 		controller: 'LoginController'
 	});
 
-	$routeProvider.when('/home', {
-		templateUrl: 'home.html',
-		controller: 'HomeController'
+	$routeProvider.when('/about', {
+		templateUrl: 'about.html',
+		controller: 'AboutController'
 	});
 
-	$routeProvider.when('/files', {
-		templateUrl: 'files.html',
-		controller: 'FilesController',
+	$routeProvider.when('/messages', {
+		templateUrl: 'messages.html',
+		controller: 'MessageController',
 		resolve: {
-			files : function(FileService) {
-				return FileService.get();
+			messages : function(MessageService) {
+				return MessageService.get();
 			}
 		}
 	});
@@ -52,7 +54,7 @@ app.config(function($httpProvider) {
 
 app.run(function($rootScope, $location, AuthenticationService, FlashService) {
 
-	var routesThatRequireAuth = ['/files'];
+	var routesThatRequireAuth = ['/messages'];
 
 	$rootScope.$on('$routeChangeStart', function(event, next, current) {
 		if( _(routesThatRequireAuth).contains($location.path()) && !AuthenticationService.isLoggedIn() ) {
