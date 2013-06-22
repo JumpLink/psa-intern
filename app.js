@@ -6,7 +6,7 @@
 var express = require('express')
   , db = require('./lib/db')
   , routes = {
-  	messages: require('./routes/messages')(db).messages
+  	messages: require('./routes/messages').messages(db)
   }
   , http = require('http')
   , path = require('path')
@@ -80,7 +80,9 @@ app.get('/about.html', function(req, res){
   res.render('about');
 });
 
-app.get('/messages', routes.messages);
+app.get('/messages/latest', routes.messages.latest);
+
+app.get('/messages/news', routes.messages.news);
 
 app.post('/message', function(req, res) {
     var msg = {

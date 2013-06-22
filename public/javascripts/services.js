@@ -81,9 +81,25 @@ app.factory("AuthenticationService", function($http, $sanitize, SessionService, 
 });
 
 app.factory("MessageService", function($http) {
-  return {
-    get: function() {
-		return $http.get('/messages');
-    }
-  };
+	return {
+		getLatest: function() {
+			return $http.get('/messages/latest');
+		},
+		getNews: function(old_messages) {
+			if(old_messages && old_messages.length > 0) {
+				console.log(old_messages);
+				var old_ids = []
+				for (var i = 0; i < old_messages.length; i++) {
+					old_ids[i] = old_messages[i].id
+				};
+				console.log(old_ids);
+				return $http({
+					method: 'GET',
+					url: '/messages/news',
+					params: {id: old_ids}
+				});
+			}
+
+		}
+	}
 });

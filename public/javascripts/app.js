@@ -15,7 +15,12 @@ app.config(function($routeProvider) {
 
 	$routeProvider.when('/messages', {
 		templateUrl: 'messages.html',
-		controller: 'MessageController'
+		controller: 'MessageController',
+		resolve: {
+			messages : function(MessageService) {
+				return MessageService.getLatest();
+			}
+		}
 	});
 
 	$routeProvider.otherwise({ redirectTo: '/login' });

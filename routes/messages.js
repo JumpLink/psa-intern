@@ -1,14 +1,28 @@
-module.exports = function (db) {
+module.exports.messages = function (db) {
 	return {
-		messages : function(req, res) {
+		latest : function(req, res) {
 			var max_results = 100;
 			db.findMessages(max_results , function(error, messages) {
-				if(error || messages ==[]) {
+				if(error || messages === []) {
 					res.json( { error: error } );
 				} else {
 					res.json( messages );
 				}
 				
+			})
+		},
+		news : function(req, res) {
+			var max_results = 100;
+			var old_ids = req.query.id;
+			db.findNewMessages(max_results, old_ids , function(error, messages) {
+			if(error || messages === []) {
+				res.json( { error: error } );
+				//console.log(error);
+			} else {
+				res.json( messages );
+				//console.log(messages);
+			}
+
 			})
 		}
 	}

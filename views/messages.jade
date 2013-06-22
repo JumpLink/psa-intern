@@ -11,6 +11,6 @@ ul.media-list
       img.media-object.img-circle(width='64px', height='64px', src='images/placeholder.jpg')
     .media-body
       h4.media-heading {{ message.from }} 
-        small {{ message.timestamp | fromNow }}
+        small {{ message.timestamp | fromNow }}  {{ message.id }}
       p
         | {{ message.message }}

@@ -42,13 +42,18 @@ app.controller('NavbarController', function($scope, $location, AuthenticationSer
 	};
 });
 
-app.controller('MessageController', function($scope, $location, $timeout, AuthenticationService, MessageService) {
+app.controller('MessageController', function($scope, $location, $timeout, AuthenticationService, MessageService, messages) {
+
+	$scope.messages = messages.data;
+
 	$scope.refreshMessages = function () {
-		MessageService.get().success(function(data) {
-			if($scope.messages !== data)
-				$scope.messages = data;
+		MessageService.getNews($scope.messages).success(function(data) {
+			if(data && data.length > 0)
+				$scope.messages = $scope.messages.concat(data);
 		});
 	};
+
+	console.log(MessageService.getNews($scope.messages));
 
 	$scope.refreshMessages();
 
