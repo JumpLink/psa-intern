@@ -5,12 +5,14 @@ ul.media-list
     .media-body
       h4.media-heading {{ getUsername() }} 
         small {{ now | date:'medium' }}
-      textarea(rows="3")
-  li.media(ng-repeat="message in messages")
+      form(ng-submit="sendMessage()", name="messageForm")
+        textarea(rows="3", ng-model="new_message.message", required)
+        button.btn.btn-large.btn-primary.btn-block(type="submit", ng-disabled="messageForm.$invalid") Send
+  li.media(ng-repeat="message in messages | orderBy:'timestamp':true")
     a.pull-left(href='#')
       img.media-object.img-circle(width='64px', height='64px', src='images/placeholder.jpg')
     .media-body
       h4.media-heading {{ message.from }} 
-        small {{ message.timestamp | fromNow }}  {{ message.id }}
+        small {{ message.timestamp | fromNow }}
       p
         | {{ message.message }}

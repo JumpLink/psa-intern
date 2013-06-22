@@ -63,6 +63,15 @@ app.controller('MessageController', function($scope, $location, $timeout, Authen
         mytimeout = $timeout($scope.onTimeout,10000);
     }
     var mytimeout = $timeout($scope.onTimeout,10000);
+
+    $scope.new_message = { message: "" };
+
+    $scope.sendMessage = function(){
+		MessageService.set($scope.new_message).success(function(data) {
+			// $location.path('/messages');
+		});
+    	
+    }
 });
 
 app.controller('TimeController', function($scope, $timeout) {

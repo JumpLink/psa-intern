@@ -87,8 +87,8 @@ app.get('/messages/news', routes.messages.news);
 app.post('/message', function(req, res) {
     var msg = {
       message: req.body.message,
-      from: req.body.email,
-      timestamp: new Date()
+      from: req.session.user.email,
+      timestamp: new Date().toJSON()
     }
 
     db.saveMessage(msg, function (err, saved) {
@@ -132,8 +132,10 @@ app.post('/auth/login', function(req, res){
     if (user) {
       console.log("user "+user.name+" übergeben");
       // Regenerate session when signing in
-      // to prevent fixation 
+      // to prevent fixation
+      var csrf_token = req.session._csrf; // DO not override csrf_token
       req.session.regenerate(function(){
+        req.session._csrf = csrf_token;
         // Store the user's primary key 
         // in the session store to be retrieved,
         // or in this case the entire user object
