@@ -9,6 +9,8 @@
     "express": "3.2.6",
     "jade": "*",
     "less-middleware": "*",
-    "pwd-base64": "*"
+    "pwd-base64": "*",
+    "debug": "*",
+    "rethinkdb": "*"
   }
 }

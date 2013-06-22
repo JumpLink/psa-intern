@@ -1,16 +1,15 @@
-exports.messages = function(req, res){
-	messages = [
-		{
-			user: 'JumpLink',
-			message: "Ich fahre heute in den Urlaub",
-			time: '01.01.2012 13:00'
-		},
-		{
-			user: 'Pfeil',
-			message: "Ich möchte heute nicht gestört werden",
-			time: '01.01.2012 13:00'
+module.exports = function (db) {
+	return {
+		messages : function(req, res) {
+			var max_results = 100;
+			db.findMessages(max_results , function(error, messages) {
+				if(error || messages ==[]) {
+					res.json( { error: error } );
+				} else {
+					res.json( messages );
+				}
+				
+			})
 		}
-	];
-	res.json( messages );
-	
-};
+	}
+}

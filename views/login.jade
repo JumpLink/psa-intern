@@ -1,9 +1,11 @@
-form.form-signin(ng-submit="login()")
-    h2.form-signin-heading
-      | Please sign in
-    input.input-block-level(type="text", name="username", placeholder="Email address", ng-model="credentials.username", required)
-    input.input-block-level(type="password",name="password", placeholder="Password", ng-model="credentials.password", required)
-    label.checkbox
-      input(type="checkbox", value="remember-me")
-      | Remember me
-    button.btn.btn-large.btn-primary.btn-block(type="submit") Sign in
+form.form-signin(ng-submit="login()", name="loginForm")
+  h2.form-signin-heading
+    | Please sign in
+  .control-group(ng-class="{'has-error':loginForm.$invalid, 'has-success':!loginForm.$invalid}")
+    .controls
+      input.input-block-level.input-with-feedback(type="email", name="email", placeholder="Email address", ng-model="credentials.email", required)
+      input.input-block-level.input-with-feedback(type="password",name="password", placeholder="Password", ng-model="credentials.password", required)
+      label.checkbox
+        input(type="checkbox", value="remember-me", disabled)
+        | Remember me
+  button.btn.btn-large.btn-primary.btn-block(type="submit", ng-disabled="loginForm.$invalid") Sign invalid

@@ -4,26 +4,29 @@ html(lang="en", ng-app="app")
   meta(charset="utf-8")
   meta(name="viewport", content="width=device-width, initial-scale=1.0")
   title
-    | Airlin
+    | PSA - internal
   link(rel="stylesheet", href="stylesheets/style.css")
   script(src="http://documentcloud.github.io/underscore/underscore.js")
-  script(src="https://ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.min.js")
-  script(src="https://ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular-sanitize.min.js")
+  script(src="https://ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.js")
+  script(src="https://ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular-sanitize.js")
+  script(src="http://code.angularjs.org/1.1.5/i18n/angular-locale_de-de.js")
+  script(src="libraries/moment.js")
   script(src="javascripts/app.js")
   script(src="javascripts/services.js")
   script(src="javascripts/controllers.js")
+  script(src="javascripts/filters.js")
   script.
     angular.module("app").constant('CSRF_TOKEN', '#{csrf_token}');
 body
   .navbar.navbar-fixed-top(ng-controller="NavbarController")
     .container
-      a.navbar-toggle(data-toggle="collapse", data-target=".nav-collapse")
+      a.navbar-toggle(ng-click="show_nav_collapse = !show_nav_collapse")
         span.icon-bar
         span.icon-bar
         span.icon-bar
       a.navbar-brand(href="#")
          | PSA - internal
-      .nav-collapse.collapse
+      .nav-collapse.collapse(ng-style="visable(show_nav_collapse)")
         ul.nav.navbar-nav
           li(ng-class="{active:isActive('/messages')}", ng-if="isLoggedIn()")
             a(href="#/messages")
@@ -35,8 +38,8 @@ body
           li
             p.navbar-text
               | Signed in as 
-              a.navbar-link(href="#")
-                | Herr Pfeil
+              a.navbar-link(href="#/user/{{getUsername()}}")
+                | {{ getUsername() }}
           li
             button.btn.btn-default.navbar-btn(ng-click="logout()")
               | Logout

@@ -1,0 +1,3 @@
+[submodule "psa-bootstrap"]
+	path = psa-bootstrap
+	url = git@github.com:JumpLink/psa-bootstrap.git

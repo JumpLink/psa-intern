@@ -15,12 +15,7 @@ app.config(function($routeProvider) {
 
 	$routeProvider.when('/messages', {
 		templateUrl: 'messages.html',
-		controller: 'MessageController',
-		resolve: {
-			messages : function(MessageService) {
-				return MessageService.get();
-			}
-		}
+		controller: 'MessageController'
 	});
 
 	$routeProvider.otherwise({ redirectTo: '/login' });
@@ -55,6 +50,8 @@ app.config(function($httpProvider) {
 app.run(function($rootScope, $location, AuthenticationService, FlashService) {
 
 	var routesThatRequireAuth = ['/messages'];
+
+	$rootScope.getUsername = AuthenticationService.getName;
 
 	$rootScope.$on('$routeChangeStart', function(event, next, current) {
 		if( _(routesThatRequireAuth).contains($location.path()) && !AuthenticationService.isLoggedIn() ) {

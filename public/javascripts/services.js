@@ -35,12 +35,15 @@ app.factory("SessionService", function() {
 });
 
 app.factory("AuthenticationService", function($http, $sanitize, SessionService, FlashService, CSRF_TOKEN) {
-	var cacheSession = function() {
+	var cacheSession = function(data, status, headers, config) {
+		console.log(data);
 		SessionService.set('authenticated', true);
+		SessionService.set('name', data.name);
 	};
 
 	var uncacheSession = function() {
 		SessionService.unset('authenticated');
+		SessionService.unset('name');
 	};
 
 	var loginError = function(response) {
@@ -49,7 +52,7 @@ app.factory("AuthenticationService", function($http, $sanitize, SessionService, 
 
 	var sanitizeCredentials = function(credentials) {
 		return {
-			username: $sanitize(credentials.username),
+			email: $sanitize(credentials.email),
 			password: $sanitize(credentials.password),
 			_csrf: CSRF_TOKEN
 		}
@@ -70,6 +73,9 @@ app.factory("AuthenticationService", function($http, $sanitize, SessionService, 
 		},
 		isLoggedIn: function() {
 			return SessionService.get('authenticated');
+		},
+		getName: function() {
+			return SessionService.get('name');
 		}
 	}
 });
@@ -77,7 +83,7 @@ app.factory("AuthenticationService", function($http, $sanitize, SessionService, 
 app.factory("MessageService", function($http) {
   return {
     get: function() {
-      return $http.get('/messages');
+		return $http.get('/messages');
     }
   };
 });

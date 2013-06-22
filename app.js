@@ -4,14 +4,18 @@
  */
 
 var express = require('express')
+  , db = require('./lib/db')
   , routes = {
-  	messages: require('./routes/messages').messages
+  	messages: require('./routes/messages')(db).messages
   }
   , http = require('http')
   , path = require('path')
   , hash = require('pwd-base64').hash;
 
 var app = express();
+
+// set up the RethinkDB database
+db.setup();
 
 // all environments
 app.set('port', process.env.PORT || 3000);
@@ -33,36 +37,28 @@ if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
 
-// dummy database
-
-var users = {
-  JumpLink: { name: 'JumpLink' }
-};
-
-// when you create a user, generate a salt
-// and hash the password ('foobar' is the pass here)
-
-hash('123456', function(err, salt, hash){
-  if (err) throw err;
-  users.JumpLink.salt = salt;
-  users.JumpLink.hash = hash;
-});
-
 // Authenticate using our plain-object database of doom!
 
-function authenticate(name, password, cb) {
-  if (!module.parent) console.log('authenticating %s:%s', name, password);
-  var user = users[name];
-  // query the db for the given username
-  if (!user) return cb(new Error('cannot find user'));
-  // apply the same algorithm to the POSTed password, applying
-  // the hash against the pass / salt, if there is a match we
-  // found the user
-  hash(password, user.salt, function(err, hash){
-    if (err) return cb(err);
-    if (hash == user.hash) return cb(null, user);
-    cb(new Error('invalid password'));
-  })
+function authenticate(email, password, cb) {
+  if (!module.parent) console.log('authenticating %s:%s', email, password);
+  //var user = users[email];
+  db.findUserByEmail(email, function(err, user) {
+    if(err || !user) {
+      return cb(new Error('cannot find user'));
+    } else {
+      // apply the same algorithm to the POSTed password, applying
+      // the hash against the pass / salt, if there is a match we
+      // found the user
+      hash(password, user.salt, function(err, hash){
+        if (err) return cb(err);
+        if (hash == user.hash){
+          //All right
+          return cb(null, user);
+        }
+        cb(new Error('invalid password'));
+      })
+    }
+  }); 
 }
 
 function restrict(req, res, next) {
@@ -86,10 +82,53 @@ app.get('/about.html', function(req, res){
 
 app.get('/messages', routes.messages);
 
+app.post('/message', function(req, res) {
+    var msg = {
+      message: req.body.message,
+      from: req.body.email,
+      timestamp: new Date()
+    }
+
+    db.saveMessage(msg, function (err, saved) {
+      if (err || !saved) {
+        res.json(500, {flash: "There was an error saving your message from: "+msg.from+", timestamp: "+msg.timestamp});
+      } else {
+        res.json(msg);
+      }
+    });
+})
+
+app.post('/user', function(req, res) {
+
+  //TODO
+
+  // dummy database
+  var users = {
+    "jumplink@gmail.com": { name: 'JumpLink' },
+    "cp@rimtest.de": { name: 'Pfeil' }
+  };
+
+  // when you create a user, generate a salt
+  // and hash the password ('foobar' is the pass here)
+
+  hash('123456', function(err, salt, hash){
+    if (err) throw err;
+    users["jumplink@gmail.com"].salt = salt;
+    users["jumplink@gmail.com"].hash = hash;
+  });
+
+  hash('rimtest', function(err, salt, hash){
+    if (err) throw err;
+    users["cp@rimtest.de"].salt = salt;
+    users["cp@rimtest.de"].hash = hash;
+  });
+});
+
 app.post('/auth/login', function(req, res){
 
-  authenticate(req.body.username, req.body.password, function(err, user){
+  authenticate(req.body.email, req.body.password, function(err, user){
     if (user) {
+      console.log("user "+user.name+" übergeben");
       // Regenerate session when signing in
       // to prevent fixation 
       req.session.regenerate(function(){
@@ -100,11 +139,12 @@ app.post('/auth/login', function(req, res){
         req.session.success = 'Authenticated as ' + user.name
           + ' click to <a href="/logout">logout</a>. '
           + ' You may now access <a href="/restricted">/restricted</a>.';
+        console.log(req.session.success);
         res.json(user);
       });
     } else {
       req.session.error = 'Authentication failed, please check your '
-        + ' username and password.'
+        + ' email and password.'
         + ' (use "tj" and "foobar")';
       res.json(500, {flash: 'Invalid user or password'});
     }

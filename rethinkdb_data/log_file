@@ -1,0 +1,30 @@
+2013-06-22T15:59:29.790250011 0.049688s info: Creating directory /home/jumplink/Projekte/git/psa-intern/rethinkdb_data
+2013-06-22T15:59:29.790496707 0.049934s info: Creating a default database for your convenience. (This is because you ran 'rethinkdb' without 'create', 'serve', or '--join', and the directory '/home/jumplink/Projekte/git/psa-intern/rethinkdb_data' did not already exist.)
+2013-06-22T15:59:29.790562059 0.049999s info: Running rethinkdb 1.6.0-0ubuntu1~raring (GCC 4.7.3)...
+2013-06-22T15:59:29.792259912 0.051697s info: Running on Linux 3.8.0-23-generic x86_64
+2013-06-22T15:59:29.792344278 0.051782s info: Loading data from directory /home/jumplink/Projekte/git/psa-intern/rethinkdb_data
+2013-06-22T15:59:31.926664693 2.186102s info: Listening for intracluster connections on port 29015
+2013-06-22T15:59:31.928965778 2.188403s info: Listening for client driver connections on port 28015
+2013-06-22T15:59:31.929031823 2.188469s info: Listening for administrative HTTP connections on port 8080
+2013-06-22T15:59:31.929033497 2.188471s info: Listening on addresses: 127.0.0.1, 127.0.1.1
+2013-06-22T15:59:31.929034469 2.188472s info: To fully expose RethinkDB on the network, bind to all addresses
+2013-06-22T15:59:31.929035376 2.188473s info: by running rethinkdb with the `--bind all` command line option.
+2013-06-22T15:59:31.929036384 2.188474s info: Server ready
+2013-06-22T16:00:15.891156811 46.150595s info: Applying data {"databases":{"69e4fde1-85ef-4fe1-9deb-e467461bef51":null}}
+2013-06-22T16:00:50.203177543 80.462616s info: Applying data {"databases":{"new":{"name":"psa_internal"}}}
+2013-06-22T16:01:18.433235333 108.692673s info: Applying data {"rdb_namespaces":{"new":{"name":"messages","primary_uuid":"00000000-0000-0000-0000-000000000000","database":"7fb5ca6b-b8c5-4927-b0ef-2dcd85b546ae","ack_expectations":{"00000000-0000-0000-0000-000000000000":{"expectation":1,"hard_durability":true}}}}}
+2013-06-22T16:05:13.500219271 343.759657s info: Server got SIGINT; shutting down...
+2013-06-22T16:05:13.500364682 343.759802s info: Shutting down client connections...
+2013-06-22T16:05:13.500450622 343.759888s info: All client connections closed.
+2013-06-22T16:05:13.500455507 343.759893s info: Shutting down storage engine... (This may take a while if you had a lot of unflushed data in the writeback cache.)
+2013-06-22T16:05:13.504822132 343.764260s info: Storage engine shut down.
+2013-06-22T16:05:14.360172538 0.002022s info: Running rethinkdb 1.6.0-0ubuntu1~raring (GCC 4.7.3)...
+2013-06-22T16:05:14.362971353 0.004821s info: Running on Linux 3.8.0-23-generic x86_64
+2013-06-22T16:05:14.363062422 0.004912s info: Loading data from directory /home/jumplink/Projekte/git/psa-intern/rethinkdb_data
+2013-06-22T16:05:14.479302701 0.121152s info: Listening for intracluster connections on port 29015
+2013-06-22T16:05:14.482150250 0.124000s info: Listening for client driver connections on port 28015
+2013-06-22T16:05:14.482203361 0.124053s info: Listening for administrative HTTP connections on port 8080
+2013-06-22T16:05:14.482204538 0.124054s info: Listening on addresses: 127.0.0.1, 127.0.1.1
+2013-06-22T16:05:14.482205150 0.124054s info: To fully expose RethinkDB on the network, bind to all addresses
+2013-06-22T16:05:14.482205776 0.124055s info: by running rethinkdb with the `--bind all` command line option.
+2013-06-22T16:05:14.482206372 0.124055s info: Server ready
