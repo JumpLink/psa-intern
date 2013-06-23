@@ -53,22 +53,19 @@ app.controller('MessageController', function($scope, $location, $timeout, Authen
 		});
 	};
 
-	console.log(MessageService.getNews($scope.messages));
-
 	$scope.refreshMessages();
 
-    $scope.onTimeout = function(){
+    $scope.onRefresh = function(){
         $scope.refreshMessages();
-        //console.log("nächste Runde");
-        mytimeout = $timeout($scope.onTimeout,10000);
+        refresh_timeout = $timeout($scope.onRefresh,10000);
     }
-    var mytimeout = $timeout($scope.onTimeout,10000);
+    var refresh_timeout = $timeout($scope.onRefresh,10000);
 
     $scope.new_message = { message: "" };
 
     $scope.sendMessage = function(){
 		MessageService.set($scope.new_message).success(function(data) {
-			// $location.path('/messages');
+
 		});
     	
     }
@@ -76,9 +73,9 @@ app.controller('MessageController', function($scope, $location, $timeout, Authen
 
 app.controller('TimeController', function($scope, $timeout) {
 	$scope.now = new Date();
-    $scope.onTimeout = function(){
+    $scope.onRefreshSecond = function(){
         $scope.now = new Date();
-        mytimeout = $timeout($scope.onTimeout,1000);
+        timer_timeout = $timeout($scope.onRefreshSecond,1000);
     }
-    var mytimeout = $timeout($scope.onTimeout,1000);
+    var timer_timeout = $timeout($scope.onRefreshSecond,1000);
 });

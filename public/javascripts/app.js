@@ -56,7 +56,7 @@ app.run(function($rootScope, $location, AuthenticationService, FlashService) {
 
 	var routesThatRequireAuth = ['/messages'];
 
-	$rootScope.getUsername = AuthenticationService.getName;
+	$rootScope.getUser = AuthenticationService.getUser;
 
 	$rootScope.$on('$routeChangeStart', function(event, next, current) {
 		if( _(routesThatRequireAuth).contains($location.path()) && !AuthenticationService.isLoggedIn() ) {

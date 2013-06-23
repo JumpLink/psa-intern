@@ -80,11 +80,11 @@ app.get('/about.html', function(req, res){
   res.render('about');
 });
 
-app.get('/messages/latest', routes.messages.latest);
+app.get('/messages/latest', restrict, routes.messages.latest);
 
-app.get('/messages/news', routes.messages.news);
+app.get('/messages/news', restrict, routes.messages.news);
 
-app.post('/message', function(req, res) {
+app.post('/message', restrict, function(req, res) {
     var msg = {
       message: req.body.message,
       from: req.session.user.email,
@@ -100,7 +100,7 @@ app.post('/message', function(req, res) {
     });
 })
 
-app.post('/user', function(req, res) {
+app.post('/user', restrict, function(req, res) {
 
   //TODO
 

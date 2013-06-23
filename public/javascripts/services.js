@@ -36,14 +36,15 @@ app.factory("SessionService", function() {
 
 app.factory("AuthenticationService", function($http, $sanitize, SessionService, FlashService, CSRF_TOKEN) {
 	var cacheSession = function(data, status, headers, config) {
-		console.log(data);
 		SessionService.set('authenticated', true);
 		SessionService.set('name', data.name);
+		SessionService.set('email', data.email);
 	};
 
 	var uncacheSession = function() {
 		SessionService.unset('authenticated');
 		SessionService.unset('name');
+		SessionService.unset('email');
 	};
 
 	var loginError = function(response) {
@@ -74,8 +75,11 @@ app.factory("AuthenticationService", function($http, $sanitize, SessionService, 
 		isLoggedIn: function() {
 			return SessionService.get('authenticated');
 		},
-		getName: function() {
-			return SessionService.get('name');
+		getUser: function() {
+			return {
+				name: SessionService.get('name'),
+				email: SessionService.get('email')
+			}
 		}
 	}
 });
@@ -95,12 +99,10 @@ app.factory("MessageService", function($http, $sanitize, CSRF_TOKEN) {
 
 	var getNews = function(old_messages) {
 		if(old_messages && old_messages.length > 0) {
-			console.log(old_messages);
 			var old_ids = []
 			for (var i = 0; i < old_messages.length; i++) {
 				old_ids[i] = old_messages[i].id
 			};
-			console.log(old_ids);
 			return $http({
 				method: 'GET',
 				url: '/messages/news',

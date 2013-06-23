@@ -3,8 +3,9 @@ ul.media-list
     a.pull-left(href='#')
       img.media-object.img-circle(width='64px', height='64px', src='images/placeholder.jpg')
     .media-body
-      h4.media-heading {{ getUsername() }} 
-        small {{ now | date:'medium' }}
+      h4.media-heading
+        a(href="#/user/{{ getUser().email }}"){{ getUser().name }} 
+        small(title="now") {{ now | date:'medium' }}
       form(ng-submit="sendMessage()", name="messageForm")
         textarea(rows="3", ng-model="new_message.message", required)
         button.btn.btn-large.btn-primary.btn-block(type="submit", ng-disabled="messageForm.$invalid") Send
@@ -13,6 +14,6 @@ ul.media-list
       img.media-object.img-circle(width='64px', height='64px', src='images/placeholder.jpg')
     .media-body
       h4.media-heading {{ message.from }} 
-        small {{ message.timestamp | fromNow }}
+        small(title="{{message.timestamp | date:'medium'}}") {{ message.timestamp | fromNow }}
       p
         | {{ message.message }}
