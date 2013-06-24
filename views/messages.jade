@@ -13,7 +13,8 @@ ul.media-list
     a.pull-left(href='#')
       img.media-object.img-circle(width='64px', height='64px', src='images/placeholder.jpg')
     .media-body
-      h4.media-heading {{ message.from }} 
+      h4.media-heading
+        a(href="#/user/{{ message.from }}"){{ message.name }} 
         small(title="{{message.timestamp | date:'medium'}}") {{ message.timestamp | fromNow }}
-      p
-        | {{ message.message }}
+      //- WORKAUROUND use ng-bind-html-unsafe to display umlaute
+      p(ng-bind-html-unsafe="message.message")

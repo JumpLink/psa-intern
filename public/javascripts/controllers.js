@@ -47,8 +47,14 @@ app.controller('MessageController', function($scope, $location, $timeout, Authen
 	$scope.messages = messages.data;
 
 	$scope.refreshMessages = function () {
-		MessageService.getNews($scope.messages).success(function(data) {
-			if(data && data.length > 0)
+		// MessageService.getNewsFromServer().success(function(data) {
+		// 	if(data && data.length > 0)
+		// 		$scope.messages = $scope.messages.concat(data);
+		// });
+		MessageService.getNews($scope.messages, function(err, data) {
+			if(err || !data)
+				console.log(err);
+			else 
 				$scope.messages = $scope.messages.concat(data);
 		});
 	};
@@ -65,9 +71,11 @@ app.controller('MessageController', function($scope, $location, $timeout, Authen
 
     $scope.sendMessage = function(){
 		MessageService.set($scope.new_message).success(function(data) {
-
+			if(data && data.length > 0) {
+				$scope.new_message.message = "";
+				$scope.messages = $scope.messages.concat(data);
+			}	
 		});
-    	
     }
 });
 

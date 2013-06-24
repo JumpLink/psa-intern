@@ -93,22 +93,49 @@ app.factory("MessageService", function($http, $sanitize, CSRF_TOKEN) {
 		}
 	};
 
+	/*
+	 * Return messages from mes_a they are not stored in mes_b
+	 */
+	var not_in = function(mes_a, mes_b) {
+		var result = []
+		for (var a = 0; a < mes_a.length; a++) {
+			var found_id = false;
+			for (var b = 0; b < mes_b.length; b++) {
+				if(mes_a[a].id === mes_b[b].id) {
+					found_id = true;
+				}
+			};
+			if(!found_id) {
+				result.push(mes_a[a]);
+			}
+		};
+		return result;
+	}
+
 	var getLatest = function() {
 		return $http.get('/messages/latest');
 	};
 
-	var getNews = function(old_messages) {
-		if(old_messages && old_messages.length > 0) {
-			var old_ids = []
-			for (var i = 0; i < old_messages.length; i++) {
-				old_ids[i] = old_messages[i].id
-			};
-			return $http({
-				method: 'GET',
-				url: '/messages/news',
-				params: {id: old_ids}
-			});
-		}
+	/*
+	 * use "getLatest()" and saves the new messages they are not curently in "stored_messages"
+	 */
+	var getNews = function(stored_messages, cb) {
+		getLatest().success(function(mes) {
+			if(stored_messages === []) {
+				cb(null, mes);
+			} else {
+				cb(null, not_in(mes, stored_messages));
+				return;
+			}
+		});
+		return;
+	};
+
+	/*
+	 * Return new messages processed from server
+	 */
+	var getNewsFromServer = function() {
+		return $http.get('/messages/news');
 	};
 
 	var set = function(new_message) {
@@ -121,4 +148,10 @@ app.factory("MessageService", function($http, $sanitize, CSRF_TOKEN) {
 		getNews: getNews,
 		set: set
 	}
+});
+
+app.factory("UserService", function($http) {
+	var getUser = function() {
+		return $http.get('/users');
+	};
 });

@@ -79,10 +79,13 @@ app.get('/login.html', function(req, res){
 app.get('/about.html', function(req, res){
   res.render('about');
 });
+app.get('/user.html', function(req, res){
+  res.render('user');
+});
 
-app.get('/messages/latest', restrict, routes.messages.latest);
+app.get('/messages/latest', restrict, routes.messages.all);
 
-app.get('/messages/news', restrict, routes.messages.news);
+app.get('/messages/news', restrict, routes.messages.updates);
 
 app.post('/message', restrict, function(req, res) {
     var msg = {
@@ -95,10 +98,22 @@ app.post('/message', restrict, function(req, res) {
       if (err || !saved) {
         res.json(500, {flash: "There was an error saving your message from: "+msg.from+", timestamp: "+msg.timestamp});
       } else {
-        res.json(msg);
+        routes.messages.updates(req, res);
+        //res.json(saved);
       }
     });
-})
+});
+
+app.get('/users', restrict, function (req, res) {
+  var max = 1000;
+  db.findUsers(max, function (error, users) {
+    if(error || !users) {
+      res.json( 500, {error:error} );
+    } else {
+      res.json( users );
+    }
+  });
+});
 
 app.post('/user', restrict, function(req, res) {
 
