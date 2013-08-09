@@ -16,6 +16,28 @@ app.controller('LoginController', function($scope, $location, AuthenticationServ
 	};
 });
 
+app.controller('UserController', function($scope, $routeParams, UsersService) {
+	$scope.email = $routeParams.email;
+	UsersService.getUser($scope.email, function(err, data) {
+		if(err || !data)
+			console.log(err);
+		else {
+			$scope.username = data.name;
+		}
+	});
+});
+
+app.controller('UsersController', function($scope, UsersService) {
+	UsersService.getUsers(function(err, data) {
+		if(err || !data)
+			console.log(err);
+		else {
+			console.log(data);
+			$scope.users = data;
+		}
+	});
+});
+
 app.controller('NavbarController', function($scope, $location, AuthenticationService) {
 	$scope.isLoggedIn = AuthenticationService.isLoggedIn;
 
@@ -36,9 +58,13 @@ app.controller('NavbarController', function($scope, $location, AuthenticationSer
 
 	$scope.logout = function() {
 		AuthenticationService.logout().success(function() {
-			window.location.href = "/"; //WORKAROUND loads the site completly new to reset the csrf_token 
+			window.location.href = "/#/loggedout"; //WORKAROUND loads the site completly new to reset the csrf_token 
 			//$location.path("/login");
 		});
+	};
+
+	$scope.login = function() {
+		$location.path('/login');
 	};
 });
 

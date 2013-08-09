@@ -3,6 +3,15 @@
 var app = angular.module("app", ['ngSanitize']);
 
 app.config(function($routeProvider) {
+
+	$routeProvider.when('/notfound', {
+		templateUrl: 'notfound.html'
+	});
+
+	$routeProvider.when('/loggedout', {
+		templateUrl: 'loggedout.html'
+	});
+
 	$routeProvider.when('/login', {
 		templateUrl: 'login.html',
 		controller: 'LoginController'
@@ -23,7 +32,17 @@ app.config(function($routeProvider) {
 		}
 	});
 
-	$routeProvider.otherwise({ redirectTo: '/login' });
+	$routeProvider.when('/user/:email', {
+		templateUrl: 'user.html',
+		controller: 'UserController'
+	});
+
+	$routeProvider.when('/users', {
+		templateUrl: 'users.html',
+		controller: 'UsersController'
+	});
+
+	$routeProvider.otherwise({ redirectTo: '/notfound' });
 });
 
 app.config(function($httpProvider) {
@@ -54,7 +73,7 @@ app.config(function($httpProvider) {
 
 app.run(function($rootScope, $location, AuthenticationService, FlashService) {
 
-	var routesThatRequireAuth = ['/messages'];
+	var routesThatRequireAuth = ['/messages', '/users']; //TODO  user/:email
 
 	$rootScope.getUser = AuthenticationService.getUser;
 

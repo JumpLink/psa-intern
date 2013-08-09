@@ -1,23 +1,23 @@
 doctype 5
 html(lang="en", ng-app="app")
   head
-  meta(charset="utf-8")
-  meta(name="viewport", content="width=device-width, initial-scale=1.0")
-  title
-    | PSA - internal
-  link(rel="stylesheet", href="stylesheets/style.css")
-  script(src="http://documentcloud.github.io/underscore/underscore.js")
-  script(src="https://ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.js")
-  script(src="https://ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular-sanitize.js")
-  script(src="http://code.angularjs.org/1.1.5/i18n/angular-locale_de-de.js")
-  script(src="libraries/moment.js/moment.min.js")
-  script(src="libraries/moment.js/lang/de.js")
-  script(src="javascripts/app.js")
-  script(src="javascripts/services.js")
-  script(src="javascripts/controllers.js")
-  script(src="javascripts/filters.js")
-  script.
-    angular.module("app").constant('CSRF_TOKEN', '#{csrf_token}');
+    meta(charset="utf-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    title
+      | PSA - internal
+    link(rel="stylesheet", href="stylesheets/style.css")
+    script(src="http://documentcloud.github.io/underscore/underscore.js")
+    script(src="https://ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.js")
+    script(src="https://ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular-sanitize.js")
+    script(src="http://code.angularjs.org/1.1.5/i18n/angular-locale_de-de.js")
+    script(src="libraries/moment.js/moment.min.js")
+    script(src="libraries/moment.js/lang/de.js")
+    script(src="javascripts/app.js")
+    script(src="javascripts/services.js")
+    script(src="javascripts/controllers.js")
+    script(src="javascripts/filters.js")
+    script.
+      angular.module("app").constant('CSRF_TOKEN', '#{csrf_token}');
 body
   .navbar.navbar-fixed-top(ng-controller="NavbarController")
     .container
@@ -29,12 +29,15 @@ body
          | PSA - internal
       .nav-collapse.collapse(ng-style="visable(show_nav_collapse)")
         ul.nav.navbar-nav
-          li(ng-class="{active:isActive('/messages')}", ng-if="isLoggedIn()")
-            a(href="#/messages")
-              | Messages
           li(ng-class="{active:isActive('/about')}")
             a(href="#/about")
               | About
+          li(ng-class="{disabled:!isLoggedIn()}")
+            a(href="#/messages")
+              | Messages
+          li(ng-class="{disabled:!isLoggedIn()}")
+            a(href="#/users")
+              | Users
         ul.nav.navbar-nav.pull-right(ng-if="isLoggedIn()")
           li
             p.navbar-text
@@ -45,8 +48,11 @@ body
             button.btn.btn-default.navbar-btn(ng-click="logout()")
               | Logout
         ul.nav.navbar-nav.pull-right(ng-if="!isLoggedIn()")
+          li
+            p.navbar-text
+              | You are not signed in 
           li(ng-class="{active:isActive('/login')}")
-            a.navbar-link(href="#/Login)")
+            button.btn.btn-default.navbar-btn(ng-click="login()")
               | Login
   #flash.alert(class="alert-{{flash.type}}", ng-show="flash.message")
     | {{flash.message}}

@@ -70,6 +70,10 @@ function restrict(req, res, next) {
   }
 }
 
+/**
+ * Routes that are only always avable
+ */
+
 app.get('/', function(req, res){
   res.render('index', { csrf_token: req.session._csrf });
 });
@@ -81,6 +85,26 @@ app.get('/about.html', function(req, res){
 });
 app.get('/user.html', function(req, res){
   res.render('user');
+});
+app.get('/notfound.html', function(req, res){
+  res.render('notfound');
+});
+app.get('/loggedout.html', function(req, res){
+  res.render('loggedout');
+});
+
+app.get('/auth/logout', function(req, res){
+
+  // destroy the user's session to log them out
+  // will be re-created next request
+  // req.session.destroy(function(){
+  //   res.json({flash: 'Logged Out!', new_csrf_token: req.session._csrf});
+  // });
+
+  delete req.session.user;
+  delete req.session.success;
+  res.json({flash: 'Logged Out!'});
+ 
 });
 
 app.get('/messages/latest', restrict, routes.messages.all);
@@ -104,16 +128,9 @@ app.post('/message', restrict, function(req, res) {
     });
 });
 
-app.get('/users', restrict, function (req, res) {
-  var max = 1000;
-  db.findUsers(max, function (error, users) {
-    if(error || !users) {
-      res.json( 500, {error:error} );
-    } else {
-      res.json( users );
-    }
-  });
-});
+/**
+ * Routes that are only avable if a user is logged in
+ */
 
 app.post('/user', restrict, function(req, res) {
 
@@ -121,8 +138,8 @@ app.post('/user', restrict, function(req, res) {
 
   // dummy database
   var users = {
-    "jumplink@gmail.com": { name: 'JumpLink' },
-    "cp@rimtest.de": { name: 'Pfeil' }
+    "jumplink@gmail.com": { name: 'JumpLink' }, //tmp pw: 123456
+    "cp@rimtest.de": { name: 'Pfeil' } //tmp pw: 123456
   };
 
   // when you create a user, generate a salt
@@ -171,25 +188,40 @@ app.post('/auth/login', function(req, res){
 
 });
 
-app.get('/auth/logout', function(req, res){
-
-  // destroy the user's session to log them out
-  // will be re-created next request
-  // req.session.destroy(function(){
-  //   res.json({flash: 'Logged Out!', new_csrf_token: req.session._csrf});
-  // });
-
-  delete req.session.user;
-  delete req.session.success;
-  res.json({flash: 'Logged Out!'});
- 
-});
-
-/**
- * Routes that are only avable if a user is logged in
- */
 app.get('/messages.html', restrict, function(req, res){
   res.render('messages');
+});
+
+app.get('/user.html', restrict, function(req, res){
+  res.render('user');
+});
+
+app.get('/user/:email', restrict, function (req, res) {
+  db.findUserByEmail(req.params.email, function (error, user) {
+    if(error || !user) {
+      res.json( 500, {error:error} );
+    } else {
+      delete user.salt //TODO in Datenbank auslagern
+      delete user.hash //TODO in Datenbank auslagern
+      res.json( user );
+    }
+  });
+});
+
+app.get('/users.html', restrict, function(req, res){
+  res.render('users');
+});
+
+app.get('/users', restrict, function (req, res) {
+  var max = 1000;
+  db.findUsers(max, function (error, results) {
+    if(error || !results) {
+      res.json( 500, {error:error} );
+    } else {
+      console.log(results);
+      res.json( results );
+    }
+  });
 });
 
 http.createServer(app).listen(app.get('port'), function(){

@@ -1,0 +1,8 @@
+ul.media-list
+  li.media(ng-repeat="user in users")
+    a.pull-left(href='#')
+      img.media-object.img-circle(width='64px', height='64px', src='images/placeholder.jpg')
+    .media-body
+      h4.media-heading
+        a(href="#/user/{{ getUser().email }}"){{ user.name}}
+      | E-Mail: {{ user.email }}

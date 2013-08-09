@@ -150,8 +150,30 @@ app.factory("MessageService", function($http, $sanitize, CSRF_TOKEN) {
 	}
 });
 
-app.factory("UserService", function($http) {
-	var getUser = function() {
-		return $http.get('/users');
+app.factory("UsersService", function($http) {
+	var getUsers = function(cb) {
+		return $http.get('/users').success(function(data) {
+			if(data.error) {
+				cb(data.error, null);
+			} else {
+				cb(null, data);
+				return;
+			}
+		});
 	};
+	var getUser = function(email, cb) {
+		return $http.get('/user/'+email).success(function(data) {
+			if(data.error) {
+				cb(data.error, null);
+			} else {
+				cb(null, data);
+				return;
+			}
+		});
+	};
+
+	return {
+		getUsers: getUsers,
+		getUser: getUser
+	}
 });
