@@ -26,7 +26,7 @@ module.exports.messages = function (db) {
 	 * Get all Messages from DB with maximum "max" results
 	 */
 	var getFromDB = function(max, cb) {
-		db.findMessagesWithUsername(max , function(error, messages) {
+		db.findMessagesWithUsername(function(error, messages) {
 			if(error || messages === []) {
 				cb(error, null);
 			} else {
@@ -40,7 +40,7 @@ module.exports.messages = function (db) {
 	 * Get all Messages from witout the ids "ids"
 	 */
 	var getNewsFromDB = function(max, ids, cb) {
-		db.findNewMessages(max, ids , function(error, messages) {
+		db.findNewMessages(ids , function(error, messages) {
 			if(error || messages === []) {
 				cb(error, null);
 			} else {

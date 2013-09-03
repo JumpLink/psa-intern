@@ -15,7 +15,7 @@ var express = require('express')
 var app = express();
 
 // set up the RethinkDB database
-db.setup();
+//db.setup();
 
 // all environments
 app.set('port', process.env.PORT || 1234);
@@ -46,6 +46,7 @@ function authenticate(email, password, cb) {
     if(err || !user) {
       return cb(new Error('cannot find user'));
     } else {
+      console.log(user);
       // apply the same algorithm to the POSTed password, applying
       // the hash against the pass / salt, if there is a match we
       // found the user
@@ -135,11 +136,14 @@ app.post('/message', restrict, function(req, res) {
 app.post('/user', restrict, function(req, res) {
 
   //TODO
+});
 
+
+var dummy_users = function () {
   // dummy database
   var users = {
-    "jumplink@gmail.com": { name: 'JumpLink' }, //tmp pw: 123456
-    "cp@rimtest.de": { name: 'Pfeil' } //tmp pw: 123456
+    "jumplink@gmail.com": { name: 'JumpLink', email: 'jumplink@gmail.com' }, //tmp pw: 123456
+    "cp@rimtest.de": { name: 'Pfeil', email: 'cp@rimtest.de' } //tmp pw: rimtest
   };
 
   // when you create a user, generate a salt
@@ -149,14 +153,28 @@ app.post('/user', restrict, function(req, res) {
     if (err) throw err;
     users["jumplink@gmail.com"].salt = salt;
     users["jumplink@gmail.com"].hash = hash;
+
+    db.updateUser("jumplink@gmail.com", users["jumplink@gmail.com"], function (err, res) {
+      console.log(err);
+      console.log(res);
+    });
+
   });
 
   hash('rimtest', function(err, salt, hash){
     if (err) throw err;
     users["cp@rimtest.de"].salt = salt;
     users["cp@rimtest.de"].hash = hash;
+
+    db.updateUser("cp@rimtest.de", users["cp@rimtest.de"], function (err, res) {
+      console.log(err);
+      console.log(res);
+    });
+
   });
-});
+}
+dummy_users();
+
 
 app.post('/auth/login', function(req, res){
 
@@ -213,12 +231,10 @@ app.get('/users.html', restrict, function(req, res){
 });
 
 app.get('/users', restrict, function (req, res) {
-  var max = 1000;
-  db.findUsers(max, function (error, results) {
+  db.findUsers(function (error, results) {
     if(error || !results) {
       res.json( 500, {error:error} );
     } else {
-      console.log(results);
       res.json( results );
     }
   });

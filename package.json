@@ -11,6 +11,7 @@
     "less-middleware": "*",
     "pwd-base64": "*",
     "debug": "*",
-    "rethinkdb": "*"
+    "nedb": "~0.8.6",
+    "async": "~0.2.9"
   }
 }
