@@ -11,5 +11,6 @@ pids
 logs
 results
 rethinkdb_data
+node_modules
 
 npm-debug.log

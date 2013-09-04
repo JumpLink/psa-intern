@@ -11,7 +11,7 @@ module.exports.messages = function (db) {
 			var found_id = false;
 			for (var b = 0; b < mes_b.length; b++) {
 				
-				if(mes_a[a].id === mes_b[b].id) {
+				if(mes_a[a]._id === mes_b[b]._id) {
 					found_id = true;
 				}
 			};
@@ -23,9 +23,9 @@ module.exports.messages = function (db) {
 	}
 
 	/*
-	 * Get all Messages from DB with maximum "max" results
+	 * Get all Messages from DB
 	 */
-	var getFromDB = function(max, cb) {
+	var getFromDB = function(cb) {
 		db.findMessagesWithUsername(function(error, messages) {
 			if(error || messages === []) {
 				cb(error, null);
@@ -37,9 +37,9 @@ module.exports.messages = function (db) {
 	};
 
 	/*
-	 * Get all Messages from witout the ids "ids"
+	 * Get all Messages from without the ids "ids"
 	 */
-	var getNewsFromDB = function(max, ids, cb) {
+/*	var getNewsFromDB = function(ids, cb) {
 		db.findNewMessages(ids , function(error, messages) {
 			if(error || messages === []) {
 				cb(error, null);
@@ -47,15 +47,14 @@ module.exports.messages = function (db) {
 				cb(null, messages);
 			}
 		});
-	};
+	};*/
 
 	return {
 		/*
 		 * use "getFromDB" and replaces "stored_messages" with the result
 		 */
 		all : function(req, res) {
-			var max = 50;
-			getFromDB (max, function(err, mes) {
+			getFromDB (function(err, mes) {
 				if( err || !mes ) {
 					res.json( { error: err } );
 				} else {
@@ -68,17 +67,18 @@ module.exports.messages = function (db) {
 		 * use "getFromDB" and saves the new messages they are not curently in "stored_messages"
 		 */
 		updates : function(req, res) {
-			var max = 10;
-			getFromDB (max, function(err, mes) {
+			getFromDB (function(err, mes) {
 				if( err || !mes ) {
 					res.json( { error: err } );
 				} else {
 					if(stored_messages === []) {
 						stored_messages = mes;
 					} else {
-						var diff = not_in(mes, stored_messages);
-						stored_messages = stored_messages.concat(diff);
-						res.json( diff );
+						var diff = not_in (mes, stored_messages);
+						stored_messages = stored_messages.concat (diff);
+						console.log (stored_messages)
+						console.log (diff)
+						res.json (diff);
 					}
 
 				}
