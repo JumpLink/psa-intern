@@ -12,5 +12,8 @@ logs
 results
 rethinkdb_data
 node_modules
+database
 
 npm-debug.log
+nohup.out
+core
