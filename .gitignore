@@ -13,6 +13,7 @@ results
 rethinkdb_data
 node_modules
 database
+public/images/users
 
 npm-debug.log
 nohup.out

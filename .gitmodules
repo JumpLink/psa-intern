@@ -1,3 +1,6 @@
 [submodule "psa-bootstrap"]
 	path = psa-bootstrap
 	url = git@github.com:JumpLink/psa-bootstrap.git
+[submodule "public/javascripts/angular_modules/angular-file-upload"]
+	path = public/javascripts/angular_modules/angular-file-upload
+	url = git@github.com:nervgh/angular-file-upload.git

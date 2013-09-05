@@ -1,11 +1,13 @@
 form.form-signin(ng-submit="login()", name="loginForm")
-  h2.form-signin-heading
-    | Please sign in
-  .control-group(ng-class="{'has-error':loginForm.$invalid, 'has-success':!loginForm.$invalid}")
-    .controls
-      input.input-block-level.input-with-feedback(type="email", name="email", placeholder="Email address", ng-model="credentials.email", required)
-      input.input-block-level.input-with-feedback(type="password",name="password", placeholder="Password", ng-model="credentials.password", required)
-      label.checkbox
+  .form-group
+    h2
+      | Please sign in
+    .control-group(ng-class="{'has-error':loginForm.$invalid, 'has-success':!loginForm.$invalid}")
+      .controls
+        input.form-control(type="email", name="email", placeholder="Email address", ng-model="credentials.email", required)
+        input.form-control(type="password",name="password", placeholder="Password", ng-model="credentials.password", required)
+  .checkbox
+      label
         input(type="checkbox", value="remember-me", disabled)
         | Remember me
-  button.btn.btn-large.btn-primary.btn-block(type="submit", ng-disabled="loginForm.$invalid") Sign in
+    button.btn.btn-lg.btn-primary.btn-block(type="submit", ng-disabled="loginForm.$invalid") Sign in

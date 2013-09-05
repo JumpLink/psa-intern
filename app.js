@@ -6,16 +6,24 @@
 var express = require ('express')
   , db = require ('./lib/db')
   , routes = {
-  	messages: require ('./routes/messages').messages(db)
+  	messages: require ('./routes/messages').messages(db),
+    users: require ('./routes/users').users(db)
   }
   , http = require ('http')
   , path = require ('path')
-  , hash = require ('pwd-base64').hash;
+  , hash = require ('pwd-base64').hash
+  , debug = require('debug')('app')
+  , auth_debug = require('debug')('authenticate')
+  , prerror = require('debug')('error')
+  , util = require('util')
+  , inspect = function (object) {return util.inspect(object, showHidden=false, depth=2, colorize=true);};
 
 var app = express();
 
-// set up the RethinkDB database
-//db.setup();
+// set up the database
+db.init(function (err) {
+  if (err) throw err;
+});
 
 // all environments
 app.set ('port', process.env.PORT || 1234);
@@ -40,13 +48,13 @@ if ('development' == app.get ('env')) {
 // Authenticate using our plain-object database of doom!
 
 function authenticate (email, password, cb) {
-  if (!module.parent) console.log('authenticating %s:%s', email, password);
+  if (!module.parent) auth_debug('authenticating %s:%s', email, password);
   //var user = users[email];
-  db.findUserByEmail(email, function(err, user) {
+  db.findUserByEmailForAuth(email, function(err, user) {
     if(err || !user) {
       return cb(new Error('cannot find user'));
     } else {
-      console.log(user);
+      auth_debug(user);
       // apply the same algorithm to the POSTed password, applying
       // the hash against the pass / salt, if there is a match we
       // found the user
@@ -54,6 +62,8 @@ function authenticate (email, password, cb) {
         if (err) return cb(err);
         if (hash == user.hash){
           //All right
+          delete user.hash;
+          delete user.salt;
           return cb(null, user);
         }
         cb(new Error('invalid password'));
@@ -72,7 +82,7 @@ function restrict (req, res, next) {
 }
 
 /**
- * Routes that are only always avable
+ * Routes that are always available
  */
 
 app.get ('/', function (req, res){
@@ -86,6 +96,12 @@ app.get ('/about.html', function (req, res){
 });
 app.get ('/user.html', function (req, res){
   res.render('user');
+});
+app.get ('/users.html', function (req, res){
+  res.render('users');
+});
+app.get ('/messages.html', function (req, res){
+  res.render('messages');
 });
 app.get ('/notfound.html', function (req, res){
   res.render('notfound');
@@ -108,9 +124,37 @@ app.get ('/auth/logout', function(req, res){
  
 });
 
+/**
+ * Routes that are only avable if a user is logged in
+ */
 app.get ('/messages/latest', restrict, routes.messages.all);
 
 app.get ('/messages/news', restrict, routes.messages.updates);
+
+app.post ('/upload/image', restrict, function(req, res) {
+  // debug(inspect (req));
+  var fs = require('fs');
+  var mkdirp = require('mkdirp');
+  var target_folder = __dirname+"/public/images/users"
+  // get the temporary location of the file
+  var tmp_path = req.files.file.path;
+  // set where the file should actually exists - in this case it is in the "images" directory
+  var target_path = target_folder+'/'+ req.headers['user_id'];
+  mkdirp(target_folder, function (err) {
+      if (err) prerror(inspect (err));
+      else {
+        // move the file from the temporary location to the intended location
+        fs.rename(tmp_path, target_path, function(err) {
+          if (err) prerror(inspect (err));
+          // delete the temporary file, so that the explicitly set temporary upload dir does not get filled with unwanted files
+          fs.unlink(tmp_path, function() {
+              if (err) throw err;
+              res.send('File uploaded to: ' + target_path + ' - ' + req.files.file.size + ' bytes');
+          });
+        });
+      }
+  });
+});
 
 app.post ('/message', restrict, function(req, res) {
     var msg = {
@@ -129,34 +173,46 @@ app.post ('/message', restrict, function(req, res) {
     });
 });
 
-/**
- * Routes that are only avable if a user is logged in
- */
-
 app.post ('/user', restrict, function(req, res) {
+    var user = {
+      email: req.body.email,
+      name: req.body.name,
+      created_from: req.session.user.email,
+      timestamp: new Date().toJSON(),
+    }
 
-  //TODO
+    // when you create a user, generate a salt and hash the password
+    hash (req.body.password, function(err, salt, hash){
+      if (err)
+        res.json (500, {flash: "There was an error saving the user: "+user.name});
+      user.salt = salt;
+      user.hash = hash;
+
+      db.saveUser(user, function (err, saved) {
+        if (err)
+          res.json (500, {flash: "There was an error saving the user: "+user.name+" error: "+err});
+        routes.users.updates (req, res);
+      });
+    });
 });
 
 
-var dummy_users = function () {
+/*var dummy_users = function () {
   // dummy database
   var users = {
     "jumplink@gmail.com": { name: 'JumpLink', email: 'jumplink@gmail.com' }, //tmp pw: 123456
     "cp@rimtest.de": { name: 'Pfeil', email: 'cp@rimtest.de' } //tmp pw: rimtest
   };
 
-  // when you create a user, generate a salt
-  // and hash the password ('foobar' is the pass here)
-
+  // when you create a user, generate a salt and hash the password
   hash ('123456', function(err, salt, hash){
     if (err) throw err;
     users["jumplink@gmail.com"].salt = salt;
     users["jumplink@gmail.com"].hash = hash;
 
-    db.updateUser("jumplink@gmail.com", users["jumplink@gmail.com"], function (err, res) {
-      console.log(err);
-      console.log(res);
+    db.saveUser(users["jumplink@gmail.com"], function (err, res) {
+      if (err) prerror (err);
+      auth_debug(res);
     });
 
   });
@@ -166,21 +222,21 @@ var dummy_users = function () {
     users["cp@rimtest.de"].salt = salt;
     users["cp@rimtest.de"].hash = hash;
 
-    db.updateUser("cp@rimtest.de", users["cp@rimtest.de"], function (err, res) {
-      console.log(err);
-      console.log(res);
+    db.saveUser(users["cp@rimtest.de"], function (err, res) {
+      if (err) prerror (err);
+      auth_debug(res);
     });
 
   });
 }
-dummy_users();
+dummy_users();*/
 
 
 app.post ('/auth/login', function(req, res){
 
   authenticate(req.body.email, req.body.password, function(err, user){
     if (user) {
-      console.log("user "+user.name+" übergeben");
+      auth_debug("user "+user.name+" übergeben");
       // Regenerate session when signing in
       // to prevent fixation
       var csrf_token = req.session._csrf; // DO not override csrf_token
@@ -193,7 +249,7 @@ app.post ('/auth/login', function(req, res){
         req.session.success = 'Authenticated as ' + user.name
           + ' click to <a href="/logout">logout</a>. '
           + ' You may now access <a href="/restricted">/restricted</a>.';
-        console.log(req.session.success);
+        auth_debug(req.session.success);
         res.json(user);
       });
     } else {
@@ -206,28 +262,16 @@ app.post ('/auth/login', function(req, res){
 
 });
 
-app.get ('/messages.html', restrict, function(req, res){
-  res.render('messages');
-});
-
-app.get ('/user.html', restrict, function(req, res){
-  res.render('user');
-});
-
 app.get ('/user/:email', restrict, function (req, res) {
   db.findUserByEmail(req.params.email, function (error, user) {
     if(error || !user) {
       res.json( 500, {error:error} );
     } else {
-      delete user.salt //TODO in Datenbank auslagern
-      delete user.hash //TODO in Datenbank auslagern
+      delete user.salt //TODO Vorgang in Datenbank auslagern
+      delete user.hash //TODO Vorgang in Datenbank auslagern
       res.json( user );
     }
   });
-});
-
-app.get ('/users.html', restrict, function(req, res){
-  res.render('users');
 });
 
 app.get ('/users', restrict, function (req, res) {
@@ -241,5 +285,5 @@ app.get ('/users', restrict, function (req, res) {
 });
 
 http.createServer (app).listen (app.get ('port'), function (){
-  console.log ('Express server listening on port ' + app.get ('port'));
+  debug ('Express server listening on port ' + app.get ('port'));
 });

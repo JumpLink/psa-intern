@@ -36,19 +36,6 @@ module.exports.messages = function (db) {
 		});
 	};
 
-	/*
-	 * Get all Messages from without the ids "ids"
-	 */
-/*	var getNewsFromDB = function(ids, cb) {
-		db.findNewMessages(ids , function(error, messages) {
-			if(error || messages === []) {
-				cb(error, null);
-			} else {
-				cb(null, messages);
-			}
-		});
-	};*/
-
 	return {
 		/*
 		 * use "getFromDB" and replaces "stored_messages" with the result
@@ -56,7 +43,7 @@ module.exports.messages = function (db) {
 		all : function(req, res) {
 			getFromDB (function(err, mes) {
 				if( err || !mes ) {
-					res.json( { error: err } );
+					res.json( 500, { error: err } );
 				} else {
 					stored_messages = mes;
 					res.json( mes );
@@ -69,18 +56,15 @@ module.exports.messages = function (db) {
 		updates : function(req, res) {
 			getFromDB (function(err, mes) {
 				if( err || !mes ) {
-					res.json( { error: err } );
+					res.json( 500, { error: err } );
 				} else {
 					if(stored_messages === []) {
 						stored_messages = mes;
 					} else {
 						var diff = not_in (mes, stored_messages);
 						stored_messages = stored_messages.concat (diff);
-						console.log (stored_messages)
-						console.log (diff)
 						res.json (diff);
 					}
-
 				}
 			});
 		}

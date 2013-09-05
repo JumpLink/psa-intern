@@ -1,6 +1,39 @@
-.col-lg-8
-  .center
-    img.media-object.img-circle(width="64px", height="64px", src="images/placeholder.jpg")
-    | Username: {{username}}
-    br
-    | E-Mail: {{email}}
+ul.media-list
+  li.media
+    a.pull-left(href='#')
+      img.media-object.img-circle(width='64px', height='64px', ng-src='{{userImagePath}}/{{+getUser()._id}}')
+    .media-body
+      h4.media-heading
+        | {{ user.name }} 
+        small {{user.email}} {{user._id}}
+      form(ng-submit="sendUser()", name="userForm")
+        .form-group
+          label Email address
+          input.form-control(type="email", id="InputEmail", placeholder="Enter email", ng-model="user.email", required)
+        .form-group
+          label Name
+          input.form-control(type="text", id="InputName", placeholder="Enter name", ng-model="user.name", required)
+        .form-group
+          label Password
+          input.form-control(type="password", id="InputPassword", placeholder="Password", ng-model="user.password", required)
+        .form-group
+          label Image
+          input.form-control(ng-file-select, type="file", id="InputImage", placeholder="Image", ng-model="new_user.image", required)
+        .media(ng-repeat="item in uploader.queue")
+          a.pull-left(href="#")
+            img.media-object.img-circle(ng-src="{{item.preview}}", width="64px", height="64px")
+          .media-body
+            h4.media-heading {{new_user.name}}
+            | Number of images: {{ uploader.queue.length }}
+            br
+            | Name: {{ item.file.name }}
+            br
+            | Size: {{ item.file.size }}
+            br
+            .item-progress(ng-style="{ 'width': item.progress + '%' }")
+            div Uploaded: {{ item.isUploaded }}
+            .btn-group.pull-right
+              a.btn.btn-success(ng-href="#", ng-click="$event.preventDefault(); item.upload()", ng-hide="item.isUploaded") upload
+              a.btn.btn-danger(ng-href="#", ng-click="$event.preventDefault(); item.remove()") remove
+        .progress
+          .progress-bar(aria-valuenow="60", aria-valuemin="0", aria-valuemax="100", ng-style="progress_bar_style")

@@ -1,8 +1,26 @@
 ul.media-list
-  li.media(ng-repeat="user in users")
+  li.media
     a.pull-left(href='#')
-      img.media-object.img-circle(width='64px', height='64px', src='images/placeholder.jpg')
+      img.media-object.img-circle(width='64px', height='64px', ng-src='{{userImagePath}}/{{+getUser()._id}}')
     .media-body
       h4.media-heading
-        a(href="#/user/{{ getUser().email }}"){{ user.name}}
+        a(href="#/user/{{ getUser().email }}"){{ getUser().name }} 
+        small creates new user
+      form(ng-submit="sendUser()", name="userForm")
+        .form-group
+          label Email address
+          input.form-control(type="email", id="InputEmail", placeholder="Enter email", ng-model="new_user.email", required)
+        .form-group
+          label Name
+          input.form-control(type="text", id="InputName", placeholder="Enter name", ng-model="new_user.name", required)
+        .form-group
+          label Password
+          input.form-control(type="password", id="InputPassword", placeholder="Password", ng-model="new_user.password", required)
+        button.btn.btn-lg.btn-primary.btn-block(type="submit", ng-disabled="userForm.$invalid") Create
+  li.media(ng-repeat="user in users")
+    a.pull-left(href='#')
+      img.media-object.img-circle(width='64px', height='64px', ng-src='{{userImagePath}}/{{user._id}}')
+    .media-body
+      h4.media-heading
+        a(href="#/user/{{ user.email }}"){{ user.name}}
       | E-Mail: {{ user.email }}

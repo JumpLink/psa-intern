@@ -1,6 +1,7 @@
 'use strict';
 /* App Module */
-var app = angular.module("app", ['ngSanitize']);
+var app = angular.module("app", ['ngSanitize', 'angularFileUpload']);
+app.constant('userImagePath', 'images/users');
 
 app.config(function($routeProvider) {
 
@@ -39,7 +40,12 @@ app.config(function($routeProvider) {
 
 	$routeProvider.when('/users', {
 		templateUrl: 'users.html',
-		controller: 'UsersController'
+		controller: 'UsersController',
+		resolve: {
+			users : function(UsersService) {
+				return UsersService.getUsers();
+			}
+		}
 	});
 
 	$routeProvider.otherwise({ redirectTo: '/notfound' });
