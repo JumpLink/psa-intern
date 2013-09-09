@@ -1,6 +1,6 @@
 'use strict';
 /* App Module */
-var app = angular.module("app", ['ngSanitize', 'angularFileUpload']);
+var app = angular.module("app", ['ngSanitize', 'angularFileUpload', 'colorpicker.module']);
 app.constant('userImagePath', 'images/users');
 
 app.config(function($routeProvider) {

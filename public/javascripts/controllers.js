@@ -17,20 +17,26 @@ app.controller('LoginController', function($scope, $location, AuthenticationServ
 });
 
 app.controller('UserController', function($scope, $routeParams, UsersService, ImageUploadService, userImagePath) {
+	
+	var clean_upload = function () {
+    $scope.uploader.clearQueue ();
+    $scope.progress_bar_style = {width: '0%'};
+	}
+
+	$scope.uploader = ImageUploadService.uploader;
+	$scope.uploader.scope = $scope;
 	$scope.email = $routeParams.email;
-	$scope.userImagePath = userImagePath;
+
+	clean_upload ();
+
 	UsersService.getUser($scope.email, function(err, data) {
 		if(err || !data)
 			console.log(err);
 		else {
 			$scope.user = data;
-
+			$scope.user.image_src = userImagePath+"/"+$scope.user._id;
 		}
 	});
-
-	$scope.uploader = ImageUploadService.uploader;
-	$scope.uploader.scope = $scope;
-
 
 	$scope.uploader.bind('progress', function (event, item, progress) {
 	   $scope.progress_bar_style = {width: progress+'%'};
@@ -41,15 +47,31 @@ app.controller('UserController', function($scope, $routeParams, UsersService, Im
     item.headers['user_id'] = $scope.user._id;
 	});
 
+	$scope.uploader.bind('complete', function (event, xhr, item) {
+			console.log ($scope.uploader);
+	    $scope.user.image_src = item.preview;
+	    clean_upload ();
+	    $scope.$apply();
+	});
+
+	$scope.changeUser = function () {
+		UsersService.change ($scope.user).success (function (data) {
+			// TODO find user with same id and update; handle error
+		});
+	}
+
 });
 
-app.controller('UsersController', function ($scope, UsersService, users, userImagePath) {
+app.controller('UsersController', function ($scope, UsersService, users, userImagePath, ColorService) {
 
 	$scope.users = users.data; // get users form resolve in app.js
 	$scope.userImagePath = userImagePath;
-
+	$scope.new_user = {
+		color: ColorService.rand ()
+	};
   $scope.sendUser = function () {
 		UsersService.set ($scope.new_user).success (function (data) {
+			// TODO handle error
 			if (data && data.length > 0) {
 				$scope.users = $scope.users.concat(data);
 			}	

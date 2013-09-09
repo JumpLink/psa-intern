@@ -4,3 +4,6 @@
 [submodule "public/javascripts/angular_modules/angular-file-upload"]
 	path = public/javascripts/angular_modules/angular-file-upload
 	url = git@github.com:nervgh/angular-file-upload.git
+[submodule "public/libraries/font-awesome"]
+	path = public/libraries/font-awesome
+	url = git@github.com:FortAwesome/Font-Awesome.git

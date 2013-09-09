@@ -174,26 +174,38 @@ app.post ('/message', restrict, function(req, res) {
 });
 
 app.post ('/user', restrict, function(req, res) {
-    var user = {
-      email: req.body.email,
-      name: req.body.name,
-      created_from: req.session.user.email,
-      timestamp: new Date().toJSON(),
-    }
+  var user = {
+    email: req.body.email,
+    name: req.body.name,
+    color: req.body.color,
+    created_from: req.session.user.email,
+    timestamp: new Date().toJSON()
+  }
 
-    // when you create a user, generate a salt and hash the password
-    hash (req.body.password, function(err, salt, hash){
+  // when you create a user, generate a salt and hash the password
+  hash (req.body.password, function(err, salt, hash){
+    if (err)
+      res.json (500, {flash: "There was an error saving the user: "+user.name});
+    user.salt = salt;
+    user.hash = hash;
+
+    db.saveUser(user, function (err, saved) {
       if (err)
-        res.json (500, {flash: "There was an error saving the user: "+user.name});
-      user.salt = salt;
-      user.hash = hash;
-
-      db.saveUser(user, function (err, saved) {
-        if (err)
-          res.json (500, {flash: "There was an error saving the user: "+user.name+" error: "+err});
-        routes.users.updates (req, res);
-      });
+        res.json (500, {flash: "There was an error saving the user: "+user.name+" error: "+err});
+      routes.users.updates (req, res);
     });
+  });
+});
+
+app.post ('/user/:email', restrict, function(req, res) {
+  debug(inspect(req.body));
+  var user = {
+    email: req.body.email,
+    name: req.body.name,
+    color: req.body.color,
+    created_from: req.session.user.email,
+    timestamp: new Date().toJSON()
+  }
 });
 
 

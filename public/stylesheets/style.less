@@ -1,4 +1,6 @@
 @bootstrap_less_path: "../libraries/bootstrap/less";
+@ColorPickerImagePath:    "../images";
+@font_awesome_less_path: "../libraries/font-awesome/less";
 
 /*!
  * Bootstrap v3.0.0
@@ -59,6 +61,19 @@
 // Utility classes
 @import "@{bootstrap_less_path}/utilities.less";
 @import "@{bootstrap_less_path}/responsive-utilities.less";
+
+// Color Picker
+@import "colorpicker.less";
+
+/*############ FontAwesome ############*/
+@import "@{font_awesome_less_path}/variables.less";
+@FontAwesomePath: "@{font_awesome_less_path}/../font";
+@import "@{font_awesome_less_path}/mixins.less";
+@import "@{font_awesome_less_path}/path.less";
+@import "@{font_awesome_less_path}/core.less";
+@import "@{font_awesome_less_path}/bootstrap.less";
+@import "@{font_awesome_less_path}/extras.less";
+@import "@{font_awesome_less_path}/icons.less";
 
 body {
 	padding-top: 60px;

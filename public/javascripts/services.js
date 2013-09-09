@@ -2,6 +2,12 @@
 
 /* Services */
 
+app.factory("ColorService", function() {
+	return {
+		rand: function() {return '#'+(0x1000000+(Math.random())*0xffffff).toString(16).substr(1,6);}
+	};
+});
+
 app.factory("FlashService", function($rootScope) {
 	return {
 		/* type = success | danger | info | warning */
@@ -154,13 +160,15 @@ app.factory("MessageService", function($http, $sanitize, CSRF_TOKEN) {
 	}
 });
 
-app.factory("UsersService", function($http, $sanitize, CSRF_TOKEN) {
+app.factory("UsersService", function($http, $sanitize, CSRF_TOKEN, ColorService) {
 
 	var sanitizeUser = function(user) {
 		return {
 			email: $sanitize(user.email),
 			password: $sanitize(user.password),
 			name: $sanitize(user.name),
+			color:  $sanitize(user.color),
+			_id: $sanitize(user._id),
 			_csrf: CSRF_TOKEN
 		}
 	};
@@ -181,6 +189,9 @@ app.factory("UsersService", function($http, $sanitize, CSRF_TOKEN) {
 			if(data.error) {
 				cb(data.error, null);
 			} else {
+				if(!data.color || data.color == undefined || data.color == "" || data.color == "") {
+					data.color = ColorService.rand ();
+				}
 				cb(null, data);
 				return;
 			}
@@ -190,10 +201,16 @@ app.factory("UsersService", function($http, $sanitize, CSRF_TOKEN) {
 		var new_users_result = $http.post("/user", sanitizeUser(new_user));
 		return new_users_result;
 	};
+
+	var change = function(user) {
+		var user_result = $http.post("/user/"+user.email, sanitizeUser(user));
+		return user_result;
+	};
 	return {
 		getUsers: getUsers,
 		getUser: getUser,
-		set: set
+		set: set,
+		change: change
 	}
 });
 
