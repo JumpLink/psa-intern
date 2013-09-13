@@ -3,9 +3,8 @@
 /* Services */
 
 app.factory("ColorService", function() {
-	return {
-		rand: function() {return '#'+(0x1000000+(Math.random())*0xffffff).toString(16).substr(1,6);}
-	};
+	chroma.rand = function() {return '#'+(0x1000000+(Math.random())*0xffffff).toString(16).substr(1,6);}
+	return chroma;
 });
 
 app.factory("FlashService", function($rootScope) {
@@ -212,6 +211,46 @@ app.factory("UsersService", function($http, $sanitize, CSRF_TOKEN, ColorService)
 		set: set,
 		change: change
 	}
+});
+
+app.factory("UserImageService", function(userImagePath, $http) {
+
+	/*
+	 * callback (boolean) true if image exists; false if image not exists
+	 */
+	var image_exists = function (url, cb) {
+		$http.head(url)
+		.success(function (data, status, headers, config) {
+			console.log("images exists");
+			cb (true);
+			// this callback will be called asynchronously
+			// when the response is available
+		})
+		.error(function(data, status, headers, config) {
+			console.log("images not exists");
+			cb (false);
+			// called asynchronously if an error occurs
+			// or server returns response with an error status.
+		})
+	};
+
+	/*
+	 * callback (string) image url for image src or null if image not exists
+	 */
+	var img_src = function(image_id, cb) {
+		var url = userImagePath+"/"+image_id;
+		image_exists(url, function (exists) {
+			if (exists)
+				cb (url);
+			else
+				cb (null);
+		});
+	};
+
+	return {
+		image_exists: image_exists,
+		img_src: img_src
+	};
 });
 
 app.factory("ImageUploadService", function($fileUploader, $sanitize, CSRF_TOKEN) {

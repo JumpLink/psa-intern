@@ -16,7 +16,7 @@ app.controller('LoginController', function($scope, $location, AuthenticationServ
 	};
 });
 
-app.controller('UserController', function($scope, $routeParams, UsersService, ImageUploadService, userImagePath) {
+app.controller('UserController', function($scope, $routeParams, UsersService, ImageUploadService, userImagePath, UserImageService) {
 	
 	var clean_upload = function () {
     $scope.uploader.clearQueue ();
@@ -34,7 +34,10 @@ app.controller('UserController', function($scope, $routeParams, UsersService, Im
 			console.log(err);
 		else {
 			$scope.user = data;
-			$scope.user.image_src = userImagePath+"/"+$scope.user._id;
+/*			UserImageService.img_src ($scope.user._id, function (image_src) {
+				if (image_src)
+					$scope.user.image_src = image_src;
+			});*/
 		}
 	});
 

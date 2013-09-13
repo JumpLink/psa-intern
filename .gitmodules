@@ -7,3 +7,6 @@
 [submodule "public/libraries/font-awesome"]
 	path = public/libraries/font-awesome
 	url = git@github.com:FortAwesome/Font-Awesome.git
+[submodule "public/libraries/chroma.js"]
+	path = public/libraries/chroma.js
+	url = git@github.com:gka/chroma.js.git

@@ -1,0 +1,5 @@
+img.media-object.img-circle(ng-if="img_url", width='64px', height='64px', ng-src='{{img_url}}')
+svg(ng-if="!img_url", width=64, height=64)
+  circle(cx="31", cy="31", r="30", fill="{{color}}", stroke="black")
+  text(x="30", y="30", style="font-size:43px; font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;dominant-baseline: central;", text-anchor="middle")
+    | {{symbol}}

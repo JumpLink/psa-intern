@@ -109,6 +109,9 @@ app.get ('/notfound.html', function (req, res){
 app.get ('/loggedout.html', function (req, res){
   res.render('loggedout');
 });
+app.get ('/partials/userimage.html', function (req, res){
+  res.render('partials/userimage');
+});
 
 app.get ('/auth/logout', function(req, res){
 

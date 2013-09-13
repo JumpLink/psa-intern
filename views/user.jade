@@ -1,10 +1,10 @@
 ul.media-list
   li.media
     a.pull-left(href='#')
-      img.media-object.img-circle(width='64px', height='64px', ng-src='{{user.image_src}}')
+      userimage(color="user.color", img="user._id", username="user.name")
     .media-body
       h4.media-heading
-        | {{ user.name }} 
+        | {{ user.name }}
         small {{user.email}} {{user._id}}
       form(ng-submit="changeUser()", name="userForm")
         .form-group
@@ -40,7 +40,7 @@ ul.media-list
             .item-progress(ng-style="{ 'width': item.progress + '%' }")
             div Uploaded: {{ item.isUploaded }}
             .btn-group.pull-right
-              a.btn.btn-success(ng-href="#", ng-click="$event.preventDefault(); item.upload()", ng-hide="item.isUploaded") upload
-              a.btn.btn-danger(ng-href="#", ng-click="$event.preventDefault(); item.remove()") remove
+              a.btn.btn-success(ng-href="#", ng-click="$event.preventDefault(); item.upload()", ng-hide="item.isUploaded") Save
+              a.btn.btn-danger(ng-href="#", ng-click="$event.preventDefault(); item.remove()") Remove
         .progress
           .progress-bar(aria-valuenow="60", aria-valuemin="0", aria-valuemax="100", ng-style="progress_bar_style")
