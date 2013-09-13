@@ -44,6 +44,7 @@ app.factory("AuthenticationService", function($http, $sanitize, SessionService, 
 		SessionService.set('authenticated', true);
 		SessionService.set('name', data.name);
 		SessionService.set('email', data.email);
+		SessionService.set('color', data.color);
 		SessionService.set('_id', data._id);
 	};
 
@@ -51,6 +52,7 @@ app.factory("AuthenticationService", function($http, $sanitize, SessionService, 
 		SessionService.unset('authenticated');
 		SessionService.unset('name');
 		SessionService.unset('email');
+		SessionService.unset('color');
 		SessionService.unset('_id');
 	};
 
@@ -87,6 +89,7 @@ app.factory("AuthenticationService", function($http, $sanitize, SessionService, 
 			return {
 				name: SessionService.get('name'),
 				email: SessionService.get('email'),
+				color: SessionService.get('color'),
 				_id: SessionService.get('_id')
 			}
 		}
@@ -258,15 +261,15 @@ app.factory("ImageUploadService", function($fileUploader, $sanitize, CSRF_TOKEN)
 
 	// create a uploader with options
 	var uploader = $fileUploader.create({
-	    //scope: $scope,                          // to automatically update the html. Default: $rootScope
-	    url: 'upload/image',
-	    headers: {'x-csrf-token': CSRF_TOKEN},
-	    filters: [
-	        function (item) {                    // first user filter
-	            console.log('filter1');
-	            return true;
-	        }
-	    ]
+    //scope: $scope,                          // to automatically update the html. Default: $rootScope
+    url: 'upload/image',
+    headers: {'x-csrf-token': CSRF_TOKEN},
+    filters: [
+        function (item) {                    // first user filter
+            console.log('filter1');
+            return true;
+        }
+    ]
 	});
 
 	// ADDING FILTER

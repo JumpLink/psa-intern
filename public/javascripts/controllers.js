@@ -34,10 +34,6 @@ app.controller('UserController', function($scope, $routeParams, UsersService, Im
 			console.log(err);
 		else {
 			$scope.user = data;
-/*			UserImageService.img_src ($scope.user._id, function (image_src) {
-				if (image_src)
-					$scope.user.image_src = image_src;
-			});*/
 		}
 	});
 

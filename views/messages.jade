@@ -1,7 +1,7 @@
 ul.media-list
   li.media(ng-controller="TimeController")
     a.pull-left(href='#')
-      userimage(img="getUser()._id", color="getUser().color")
+      userimage(img="getUser()._id", color="getUser().color", username="getUser().name", size="64")
     .media-body
       h4.media-heading
         a(href="#/user/{{ getUser().email }}"){{ getUser().name }} 
@@ -11,7 +11,7 @@ ul.media-list
         button.btn.btn-lg.btn-primary.btn-block(type="submit", ng-disabled="MessageForm.$invalid") Send
   li.media(ng-repeat="message in messages | orderBy:'timestamp':true")
     a.pull-left(href='#')
-      userimage(img="message.author._id", color="message.author.color")
+      userimage(img="message.author._id", color="message.author.color", username="message.author.name", size="64")
     .media-body
       h4.media-heading
         a(href="#/user/{{ message.from }}"){{ message.author.name }} 

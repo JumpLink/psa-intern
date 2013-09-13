@@ -1,11 +1,12 @@
+h1 change profile
 ul.media-list
   li.media
     a.pull-left(href='#')
-      userimage(color="user.color", img="user._id", username="user.name")
+      userimage(color="user.color", img="user._id", username="user.name", size="64")
     .media-body
       h4.media-heading
-        | {{ user.name }}
-        small {{user.email}} {{user._id}}
+        | {{ user.name }} 
+        small 
       form(ng-submit="changeUser()", name="userForm")
         .form-group
           label Email address

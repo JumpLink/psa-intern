@@ -1,7 +1,8 @@
+h1 create new user
 ul.media-list
   li.media
-    a.pull-left(href='#')
-      userimage(img="getUser()._id", color="getUser().color", username="getUser().name")
+    a.pull-left(href="#/user/{{ getUser().email }}")
+      userimage(img="getUser()._id", color="getUser().color", username="getUser().name", size="64")
     .media-body
       h4.media-heading
         a(href="#/user/{{ getUser().email }}"){{ getUser().name }} 
@@ -23,9 +24,11 @@ ul.media-list
               i.icon-sign-blank(style="color: {{new_user.color}};")
             input.form-control(colorpicker="hex", value="", type="text", ng-model="new_user.color", required)
         button.btn.btn-lg.btn-primary.btn-block(type="submit", ng-disabled="userForm.$invalid") Create
+h1 available users
+ul.media-list
   li.media(ng-repeat="user in users")
-    a.pull-left(href='#')
-      userimage(img="user._id", color="user.color", username="user.name")
+    a.pull-left(href="#/user/{{ user.email }}")
+      userimage(img="user._id", color="user.color", username="user.name", size="64")
     .media-body
       h4.media-heading
         a(href="#/user/{{ user.email }}"){{ user.name}}

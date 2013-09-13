@@ -134,6 +134,7 @@ app.get ('/messages/latest', restrict, routes.messages.all);
 
 app.get ('/messages/news', restrict, routes.messages.updates);
 
+// TODO resize image?
 app.post ('/upload/image', restrict, function(req, res) {
   // debug(inspect (req));
   var fs = require('fs');
@@ -200,52 +201,40 @@ app.post ('/user', restrict, function(req, res) {
   });
 });
 
+// Change user
 app.post ('/user/:email', restrict, function(req, res) {
-  debug(inspect(req.body));
+
   var user = {
     email: req.body.email,
+    _id: req.body._id,
     name: req.body.name,
     color: req.body.color,
     created_from: req.session.user.email,
     timestamp: new Date().toJSON()
   }
+
+  var update = function (user) {
+    db.updateUserById(user._id, user, function (err, numReplaced, upsert) {
+      debug(inspect({flash: "There was an error updating the user: "+user.name, error: err, numReplaced: numReplaced, upsert: upsert}));
+      if (err)
+        res.json (500, {flash: "There was an error updating the user: "+user.name, numReplaced: numReplaced, upsert: upsert});
+      res.json({flash: "User updated", numReplaced: numReplaced, upsert: upsert})
+    });
+  }
+
+  if (typeof(req.body.password) != 'undefined' && req.body.password.length >= 6) {
+    hash (req.body.password, function(err, salt, hash){
+      if (err)
+        res.json (500, {flash: "There was an error saving the user: "+user.name});
+      user.salt = salt;
+      user.hash = hash;
+
+      update (user);
+    });
+  } else {
+    update (user);
+  }
 });
-
-
-/*var dummy_users = function () {
-  // dummy database
-  var users = {
-    "jumplink@gmail.com": { name: 'JumpLink', email: 'jumplink@gmail.com' }, //tmp pw: 123456
-    "cp@rimtest.de": { name: 'Pfeil', email: 'cp@rimtest.de' } //tmp pw: rimtest
-  };
-
-  // when you create a user, generate a salt and hash the password
-  hash ('123456', function(err, salt, hash){
-    if (err) throw err;
-    users["jumplink@gmail.com"].salt = salt;
-    users["jumplink@gmail.com"].hash = hash;
-
-    db.saveUser(users["jumplink@gmail.com"], function (err, res) {
-      if (err) prerror (err);
-      auth_debug(res);
-    });
-
-  });
-
-  hash ('rimtest', function(err, salt, hash){
-    if (err) throw err;
-    users["cp@rimtest.de"].salt = salt;
-    users["cp@rimtest.de"].hash = hash;
-
-    db.saveUser(users["cp@rimtest.de"], function (err, res) {
-      if (err) prerror (err);
-      auth_debug(res);
-    });
-
-  });
-}
-dummy_users();*/
-
 
 app.post ('/auth/login', function(req, res){
 
