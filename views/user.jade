@@ -9,39 +9,43 @@ ul.media-list
         small 
       form(ng-submit="changeUser()", name="userForm")
         .form-group
-          label Email address
-          input.form-control(type="email", id="InputEmail", placeholder="Enter email", ng-model="user.email", required)
+          label {{ 'LBL_EMAIL' | translate }}
+          input.form-control(type="email", id="InputEmail", placeholder="{{ 'PLACEHOLDER_EMAIL' | translate }}", ng-model="user.email", required)
         .form-group
-          label Name
-          input.form-control(type="text", id="InputName", placeholder="Enter name", ng-model="user.name", required)
+          label {{ 'LBL_NAME' | translate }}
+          input.form-control(type="text", id="InputName", placeholder="{{ 'PLACEHOLDER_NAME' | translate }}", ng-model="user.name", required)
         .form-group
-          label Password
-          input.form-control(type="password", id="InputPassword", placeholder="Password", ng-model="user.password")
+          label {{ 'LBL_PWD' | translate }}
+          input.form-control(type="password", id="InputPassword", placeholder="{{ 'PLACEHOLDER_PWD' | translate }}", ng-model="user.password")
         .form-group
-          label Color
+          label {{ 'LBL_COLOR' | translate }}
           .input-group
             span.input-group-addon
               i.icon-sign-blank(style="color: {{user.color}};")
             input.form-control(colorpicker="hex", value="", type="text", ng-model="user.color", required)
-        button.btn.btn-lg.btn-primary.btn-block(type="submit", ng-disabled="userForm.$invalid") Save
+        .btn-group
+          button.btn.btn-lg.btn-success(type="submit", ng-disabled="userForm.$invalid")
+            i.icon-ok  {{ 'BTN_SAVE' | translate }}
+          button.btn.btn-lg.btn-danger(type="button", ng-click="removeUser();")
+            i.icon-trash  {{ 'BTN_REMOVE' | translate }}
         .form-group
-          label Image
+          label {{ 'LBL_IMG' | translate }}
           input.form-control(ng-file-select, type="file", id="InputImage", placeholder="Image")
         .media(ng-repeat="item in uploader.queue")
           a.pull-left(href="#")
             img.media-object.img-circle(ng-src="{{item.preview}}", width="64px", height="64px")
           .media-body
             h4.media-heading {{new_user.name}}
-            | Number of images: {{ uploader.queue.length }}
+            | {{ 'LBL_IMG_NUM' | translate }}: {{ uploader.queue.length }}
             br
-            | Name: {{ item.file.name }}
+            | {{ 'LBL_FILENAME' | translate }}: {{ item.file.name }}
             br
-            | Size: {{ item.file.size }}
+            | {{ 'LBL_FILESIZE' | translate }}: {{ item.file.size }}
             br
             .item-progress(ng-style="{ 'width': item.progress + '%' }")
-            div Uploaded: {{ item.isUploaded }}
+            div {{ 'LBL_UPLOADED' | translate }}: {{ item.isUploaded }}
             .btn-group.pull-right
-              a.btn.btn-success(ng-href="#", ng-click="$event.preventDefault(); item.upload()", ng-hide="item.isUploaded") Save
-              a.btn.btn-danger(ng-href="#", ng-click="$event.preventDefault(); item.remove()") Remove
+              a.btn.btn-success(ng-href="#", ng-click="$event.preventDefault(); item.upload()", ng-hide="item.isUploaded") {{ 'BTN_SAVE' | translate }}
+              a.btn.btn-danger(ng-href="#", ng-click="$event.preventDefault(); item.remove()") {{ 'BTN_REMOVE' | translate }}
         .progress
           .progress-bar(aria-valuenow="60", aria-valuemin="0", aria-valuemax="100", ng-style="progress_bar_style")

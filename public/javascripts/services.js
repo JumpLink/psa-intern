@@ -101,6 +101,7 @@ app.factory("MessageService", function($http, $sanitize, CSRF_TOKEN) {
 	var sanitizeMessagePost = function(new_message) {
 		return {
 			message: $sanitize(new_message.message),
+			_id: $sanitize(new_message._id),
 			_csrf: CSRF_TOKEN
 		}
 	};
@@ -155,10 +156,27 @@ app.factory("MessageService", function($http, $sanitize, CSRF_TOKEN) {
 		return new_message_result;
 	};
 
+	var update = function(new_message) {
+		var error = "Diese Funktion steht noch nicht zur Verfügung"
+		alert(error);
+		console.log(error);
+		console.log(new_message);
+
+		var new_message_result = $http.post("/message/"+new_message._id, sanitizeMessagePost(new_message));
+		return new_message_result;
+	};
+
+	var remove = function(old_message) {
+		var new_message_result = $http.post("/message/remove/"+old_message._id, sanitizeMessagePost(old_message));
+		return new_message_result;
+	};
+
 	return {
 		getLatest: getLatest,
 		getNews: getNews,
-		set: set
+		set: set,
+		update: update,
+		remove: remove
 	}
 });
 
@@ -208,11 +226,18 @@ app.factory("UsersService", function($http, $sanitize, CSRF_TOKEN, ColorService)
 		var user_result = $http.post("/user/"+user.email, sanitizeUser(user));
 		return user_result;
 	};
+
+	var remove = function(user) {
+		var user_result = $http.post("/user/remove/"+user._id, sanitizeUser(user));
+		return user_result;
+	};
+
 	return {
 		getUsers: getUsers,
 		getUser: getUser,
 		set: set,
-		change: change
+		change: change,
+		remove: remove
 	}
 });
 

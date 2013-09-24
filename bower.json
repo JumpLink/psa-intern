@@ -1,0 +1,14 @@
+{
+  "name": "psa-intern",
+  "version": "0.0.3",
+  "main": "public/stylesheets/style.css",
+  "ignore": [
+    ".jshintrc",
+    "**/*.txt"
+  ],
+  "dependencies": {
+    "angular-translate": "~1.1.0",
+    "angular-ui-bootstrap": "git@github.com:angular-ui/bootstrap.git#~0.6.0"
+  },
+  "devDependencies": {}
+}

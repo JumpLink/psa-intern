@@ -62,8 +62,6 @@ function authenticate (email, password, cb) {
         if (err) return cb(err);
         if (hash == user.hash){
           //All right
-          delete user.hash;
-          delete user.salt;
           return cb(null, user);
         }
         cb(new Error('invalid password'));
@@ -177,6 +175,18 @@ app.post ('/message', restrict, function(req, res) {
     });
 });
 
+app.post ('/message/remove/:id', restrict, function(req, res) {
+    debug(inspect({flash: "Removing the message with id: "+req.body._id}));
+    db.removeMessage (req.body._id, function (err, numRemoved) {
+      if (err) {
+        res.json (500, {flash: "There was an error removing the message with id: "+req.body._id+" error: "+err, numRemoved: numRemoved});
+      } else {
+        routes.messages.updates (req, res);
+      }
+    });
+});
+
+// Create user
 app.post ('/user', restrict, function(req, res) {
   var user = {
     email: req.body.email,
@@ -215,7 +225,7 @@ app.post ('/user/:email', restrict, function(req, res) {
 
   var update = function (user) {
     db.updateUserById(user._id, user, function (err, numReplaced, upsert) {
-      debug(inspect({flash: "There was an error updating the user: "+user.name, error: err, numReplaced: numReplaced, upsert: upsert}));
+      debug(inspect({flash: "Updating the user: "+user.name, error: err, numReplaced: numReplaced, upsert: upsert}));
       if (err)
         res.json (500, {flash: "There was an error updating the user: "+user.name, numReplaced: numReplaced, upsert: upsert});
       res.json({flash: "User updated", numReplaced: numReplaced, upsert: upsert})
@@ -234,6 +244,21 @@ app.post ('/user/:email', restrict, function(req, res) {
   } else {
     update (user);
   }
+});
+
+// Remove user
+app.post ('/user/remove/:id', restrict, function(req, res) {
+
+  var remove = function (user_id) {
+    db.removeUserById(user_id, function (err, numRemoved) {
+      debug(inspect({flash: "Removing the user with id: "+user_id, numRemoved: numRemoved}));
+      if (err)
+        res.json (500, {flash: "There was an error removing the user with id: "+user_id, numRemoved: numRemoved});
+      res.json({flash: "User removed", user_id: user_id, numRemoved: numRemoved, numRemoved: numRemoved})
+    });
+  }
+
+  remove (req.body._id);
 });
 
 app.post ('/auth/login', function(req, res){
@@ -271,8 +296,6 @@ app.get ('/user/:email', restrict, function (req, res) {
     if(error || !user) {
       res.json( 500, {error:error} );
     } else {
-      delete user.salt //TODO Vorgang in Datenbank auslagern
-      delete user.hash //TODO Vorgang in Datenbank auslagern
       res.json( user );
     }
   });

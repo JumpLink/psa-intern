@@ -13,7 +13,10 @@ html(lang="en", ng-app="app")
     script(src="libraries/bootstrap-colorpicker.js")
     script(src="javascripts/angular_modules/angular-file-upload/angular-file-upload.js")
     script(src="javascripts/angular_modules/bootstrap-colorpicker-module.js")
+    //- angular-ui bootstrap
+    script(src="bower_components/angular-ui-bootstrap/src/dropdownToggle/dropdownToggle.js")
     script(src="http://code.angularjs.org/1.1.5/i18n/angular-locale_de-de.js")
+    script(src="bower_components/angular-translate/angular-translate.min.js")
     script(src="libraries/moment.js/moment.min.js")
     script(src="libraries/moment.js/lang/de.js")
     script(src="libraries/chroma.js/chroma.min.js")
@@ -32,33 +35,39 @@ body
         span.icon-bar
         span.icon-bar
       a.navbar-brand(href="#")
-         | PSA - internal
+         | {{ 'NAV_BRAND' | translate }}
     .collapse.navbar-collapse.navbar-ex1-collapse(ng-class="{false: 'collapse', true: 'in'}[show_nav_collapse]")
       ul.nav.navbar-nav(ng-click="show_nav_collapse = false")
         li(ng-class="{active:isActive('/about')}")
           a(href="#/about")
-            | About
+            | {{ 'NAV_ABOUT' | translate }}
         li(ng-class="{disabled:!isLoggedIn()}")
           a(href="#/messages")
-            | Messages
+            | {{ 'NAV_MESSAGES' | translate }}
         li(ng-class="{disabled:!isLoggedIn()}")
           a(href="#/users")
-            | Users
-      ul.nav.navbar-nav.pull-right(ng-if="isLoggedIn()")
+            | {{ 'NAV_USERS' | translate }}
+      ul.nav.navbar-nav.pull-right
         li
+          switchbutton(active="lang_switch")
+            .btn-group
+              button.btn.btn-default.navbar-btn(ng-click="toggleButton();", ng-class="{active:active}")
+                img(src="/images/lang/german.svg", height="18px")
+              button.btn.btn-default.navbar-btn(ng-click="toggleButton();", ng-class="{active:!active}")
+                img(src="/images/lang/english.svg", height="18px" )
+        li(ng-if="isLoggedIn()")
           p.navbar-text
-            | Signed in as 
+            | {{ 'TXT_SIGNED' | translate }}
             a.navbar-link(href="#/user/{{getUser().email}}")
               | {{ getUser().name }}
-        li
-          button.btn.btn-default.navbar-btn(ng-click="logout()")
-            | Logout
-      ul.nav.navbar-nav.navbar-right(ng-if="!isLoggedIn()", ng-click="show_nav_collapse = false")
-        li
+        li(ng-if="isLoggedIn()")
+          button.btn.btn-warning.navbar-btn(ng-click="logout()")
+            | {{ 'BTN_LOGOUT' | translate }}
+        li(ng-if="!isLoggedIn()", ng-click="show_nav_collapse = false")
           p.navbar-text
-            | You are not signed in 
-        li(ng-class="{active:isActive('/login')}")
-          button.btn.btn-default.navbar-btn(type="button", ng-click="login()")
+            | {{ 'TXT_NOTSIGNED' | translate }}
+        li(ng-if="!isLoggedIn()", ng-click="show_nav_collapse = false", ng-class="{active:isActive('/login')}")
+          button.btn.btn-success.navbar-btn(type="button", ng-click="login()")
             | Login
   #flash.alert(class="alert-{{flash.type}}", ng-show="flash.message")
     | {{flash.message}}

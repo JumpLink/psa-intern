@@ -1,4 +1,4 @@
-h1 create new user
+h1 {{ 'TITLE_NEWUSER' | translate }}
 ul.media-list
   li.media
     a.pull-left(href="#/user/{{ getUser().email }}")
@@ -6,25 +6,25 @@ ul.media-list
     .media-body
       h4.media-heading
         a(href="#/user/{{ getUser().email }}"){{ getUser().name }} 
-        small creates new user
+        small {{ 'TXT_NEWUSER' | translate }}
       form(ng-submit="sendUser()", name="userForm")
         .form-group
-          label Email address
-          input.form-control(type="email", id="InputEmail", placeholder="Enter email", ng-model="new_user.email", required)
+          label {{ 'LBL_EMAIL' | translate }}
+          input.form-control(type="email", id="InputEmail", placeholder="{{ 'PLACEHOLDER_EMAIL' | translate }}", ng-model="new_user.email", required)
         .form-group
-          label Name
-          input.form-control(type="text", id="InputName", placeholder="Enter name", ng-model="new_user.name", required)
+          label {{ 'LBL_NAME' | translate }}
+          input.form-control(type="text", id="InputName", placeholder="{{ 'PLACEHOLDER_NAME' | translate }}", ng-model="new_user.name", required)
         .form-group
-          label Password
-          input.form-control(type="password", id="InputPassword", placeholder="Password", ng-model="new_user.password", required)
+          label {{ 'LBL_PWD' | translate }}
+          input.form-control(type="password", id="InputPassword", placeholder="{{ 'PLACEHOLDER_PWD' | translate }}", ng-model="new_user.password", required)
         .form-group
-          label Color
+          label {{ 'LBL_COLOR' | translate }}
           .input-group
             span.input-group-addon
               i.icon-sign-blank(style="color: {{new_user.color}};")
             input.form-control(colorpicker="hex", value="", type="text", ng-model="new_user.color", required)
-        button.btn.btn-lg.btn-primary.btn-block(type="submit", ng-disabled="userForm.$invalid") Create
-h1 available users
+        button.btn.btn-lg.btn-primary.btn-block(type="submit", ng-disabled="userForm.$invalid") {{ 'BTN_CREATE' | translate }}
+h1 {{ 'TITLE_AVAILABLE_USERS' | translate }}
 ul.media-list
   li.media(ng-repeat="user in users")
     a.pull-left(href="#/user/{{ user.email }}")
@@ -32,4 +32,4 @@ ul.media-list
     .media-body
       h4.media-heading
         a(href="#/user/{{ user.email }}"){{ user.name}}
-      | E-Mail: {{ user.email }}
+      | {{ 'LBL_EMAIL' | translate }}: {{ user.email }}

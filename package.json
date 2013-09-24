@@ -1,6 +1,6 @@
 {
   "name": "psa-intern",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "private": true,
   "scripts": {
     "start": "DEBUG=authenticate,app,error node app.js"
@@ -9,7 +9,7 @@
     "express": "~3.2.6",
     "jade": "~0.35.0",
     "less-middleware": "~0.1.12",
-    "pwd-base64": "0.0.3",
+    "pwd-base64": "~0.0.3",
     "debug": "~0.7.2",
     "nedb": "~0.8.6",
     "async": "~0.2.9",

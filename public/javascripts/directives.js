@@ -32,3 +32,18 @@ app.directive("userimage", function (UserImageService) {
 		}
 	}
 });
+
+app.directive("switchbutton", [function () {
+	return {
+		restrict: "E",
+		scope: {
+			active: "=",
+		},
+		controller: ['$scope', '$element', function ($scope, $element) {
+			$scope.toggleButton = function() {
+				$scope.active = !$scope.active;
+				console.log("toogle button!");
+			}
+		}]
+	}
+}]);

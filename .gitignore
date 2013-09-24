@@ -12,6 +12,8 @@ logs
 results
 rethinkdb_data
 node_modules
+public/bower_components
+
 database
 public/images/users
 

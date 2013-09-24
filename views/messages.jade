@@ -8,10 +8,19 @@ ul.media-list
         small(title="now") {{ now | date:'medium' }}
       form(ng-submit="sendMessage()", name="MessageForm")
         textarea.form-control(rows="3", ng-model="new_message.message", required)
-        button.btn.btn-lg.btn-primary.btn-block(type="submit", ng-disabled="MessageForm.$invalid") Send
+        button.btn.btn-lg.btn-primary.btn-block(type="submit", ng-disabled="MessageForm.$invalid") {{ 'BTN_SEND' | translate }}
   li.media(ng-repeat="message in messages | orderBy:'timestamp':true")
-    a.pull-left(href='#')
+    a.pull-left(href="#/user/{{ message.from }}")
       userimage(img="message.author._id", color="message.author.color", username="message.author.name", size="64")
+    span.dropdown.pull-right(ng-if="message.author._id == getUser()._id")
+      span.dropdown-toggle.settings
+        i.icon-cog
+      ul.dropdown-menu
+        li
+          a(ng-click="removeMessage(message);")
+            i.icon-trash  {{ 'BTN_REMOVE' | translate }}
+          a(ng-click="updateMessage(message);")
+            i.icon-edit  {{ 'BTN_EDIT' | translate }}
     .media-body
       h4.media-heading
         a(href="#/user/{{ message.from }}"){{ message.author.name }} 
