@@ -8,20 +8,40 @@ app.factory("ColorService", function() {
 });
 
 app.factory("FlashService", function($rootScope) {
-	return {
-		/* type = success | danger | info | warning */
-		show: function(message, type) {
-			if (typeof type === 'undefined') {
-				type = "warning"
-			}
-			$rootScope.flash = {
-				message: message,
-				type: type
-			};
-		},
-		clear: function() {
-			$rootScope.flash = {};
+	/* type = success | danger | info | warning */
+	var show = function(message, type) {
+		if (typeof type === 'undefined') {
+			type = "warning"
 		}
+		$rootScope.flash = {
+			message: message,
+			type: type
+		};
+	};
+	var show_response = function(response) {
+		if(typeof(response) != 'undefined' && response != null) {
+			var message = 'error undefined flash message';
+			var type = 'danger';
+			if(typeof(response.flash) != 'undefined' && response.flash != null && response.flash.length > 0)
+				message = response.flash;
+			else if(typeof(response.error) != 'undefined' && response.error != null && response.error.length > 0)
+				message = response.error;
+			else if(typeof(response.err) != 'undefined' && response.err != null && response.err.length > 0)
+				message = response.err;
+
+			if(typeof(response.type) != 'undefined' && response.type != null && response.type.length > 0)
+				type = response.type;
+
+			show(message, type);
+		}
+	};
+	var clear = function() {
+		$rootScope.flash = {};
+	};
+	return {
+		show: show,
+		show_response: show_response,
+		clear: clear
 	};
 });
 
@@ -57,7 +77,7 @@ app.factory("AuthenticationService", function($http, $sanitize, SessionService, 
 	};
 
 	var loginError = function(response) {
-		FlashService.show(response.flash, "danger")
+		FlashService.show_response(response);
 	};
 
 	var sanitizeCredentials = function(credentials) {
@@ -124,7 +144,7 @@ app.factory("MessageService", function($http, $sanitize, CSRF_TOKEN) {
 		};
 		return result;
 	}
-
+	// TODO requests vereinheitlichen, deferred/promise APIs besser verstehen und nutzen
 	var getLatest = function() {
 		return $http.get('/messages/latest');
 	};
@@ -132,6 +152,7 @@ app.factory("MessageService", function($http, $sanitize, CSRF_TOKEN) {
 	/*
 	 * use "getLatest()" and saves the new messages they are not curently in "stored_messages"
 	 */
+	// TODO requests vereinheitlichen, deferred/promise APIs besser verstehen und nutzen
 	var getNews = function(stored_messages, cb) {
 		getLatest().success(function(mes) {
 			if(stored_messages === []) {
@@ -147,6 +168,7 @@ app.factory("MessageService", function($http, $sanitize, CSRF_TOKEN) {
 	/*
 	 * Return new messages processed from server
 	 */
+	// TODO requests vereinheitlichen, deferred/promise APIs besser verstehen und nutzen
 	var getNewsFromServer = function() {
 		return $http.get('/messages/news');
 	};
@@ -192,7 +214,7 @@ app.factory("UsersService", function($http, $sanitize, CSRF_TOKEN, ColorService)
 			_csrf: CSRF_TOKEN
 		}
 	};
-
+	// TODO requests vereinheitlichen, deferred/promise APIs besser verstehen und nutzen
 	var getUsers = function(cb) {
 		return $http.get('/users');
 /*		return $http.get('/users').success(function(data) {
@@ -204,9 +226,16 @@ app.factory("UsersService", function($http, $sanitize, CSRF_TOKEN, ColorService)
 			}
 		});*/
 	};
+
+	var getUserError = function(response) {
+		FlashService.show_response(response);
+	};
+
+	// TODO requests vereinheitlichen, deferred/promise APIs besser verstehen und nutzen
 	var getUser = function(email, cb) {
 		return $http.get('/user/'+email).success(function(data) {
 			if(data.error) {
+				getUserError(data);
 				cb(data.error, null);
 			} else {
 				if(!data.color || data.color == undefined || data.color == "" || data.color == "") {
@@ -215,7 +244,10 @@ app.factory("UsersService", function($http, $sanitize, CSRF_TOKEN, ColorService)
 				cb(null, data);
 				return;
 			}
-		});
+		}).error(function(data, status, headers, config) {
+			getUserError(data);
+			cb(data.error, null);
+		});;
 	};
 	var set = function(new_user) {
 		var new_users_result = $http.post("/user", sanitizeUser(new_user));

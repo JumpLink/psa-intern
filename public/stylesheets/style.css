@@ -7541,6 +7541,9 @@ body {
 .form-signin .checkbox {
   font-weight: normal;
 }
+.form-signin h2 {
+  text-align: center;
+}
 .form-signin input[type="email"],
 .form-signin input[type="password"] {
   -webkit-box-sizing: border-box;

@@ -69,6 +69,8 @@ body
         li(ng-if="!isLoggedIn()", ng-click="show_nav_collapse = false", ng-class="{active:isActive('/login')}")
           button.btn.btn-success.navbar-btn(type="button", ng-click="login()")
             | Login
-  #flash.alert(class="alert-{{flash.type}}", ng-show="flash.message")
-    | {{flash.message}}
+  flash
+      #flash.alert(class="alert-{{flash.type}}", ng-show="flash.message")
+        button.close(type="button", ng-click="close();") ×
+        | {{flash.message}}
   .container(ng-view)

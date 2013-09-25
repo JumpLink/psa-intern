@@ -16,7 +16,7 @@ app.controller('LoginController', function($scope, $location, AuthenticationServ
 	};
 });
 
-app.controller('UserController', function($scope, $routeParams, UsersService, ImageUploadService, userImagePath, UserImageService) {
+app.controller('UserController', function($scope, $routeParams, $location, UsersService, ImageUploadService, userImagePath, UserImageService, FlashService) {
 	
 	var clean_upload = function () {
 		$scope.uploader.clearQueue ();
@@ -30,9 +30,10 @@ app.controller('UserController', function($scope, $routeParams, UsersService, Im
 	clean_upload ();
 
 	UsersService.getUser($scope.email, function(err, data) {
-		if(err || !data)
-			console.log(err);
-		else {
+		if(err || !data) {
+			$location.path("/notfound");
+			//console.log(err);
+		}	else {
 			$scope.user = data;
 		}
 	});
@@ -56,18 +57,23 @@ app.controller('UserController', function($scope, $routeParams, UsersService, Im
 	$scope.changeUser = function () {
 		UsersService.change ($scope.user).success (function (data) {
 			// TODO find user with same id and show this in user view; handle error
+			FlashService.show_response(data);
 		});
 	}
 
 	$scope.removeUser = function () {
 		UsersService.remove ($scope.user).success (function (data) {
-			// TODO find user with same id and show this in user view; handle error
+			$location.path("/users");
+			FlashService.show_response(data);
+		}).error (function (data) {
+			//$location.path("/users");
+			FlashService.show_response(data);
 		});
 	}
 
 });
 
-app.controller('UsersController', function ($scope, UsersService, users, userImagePath, ColorService) {
+app.controller('UsersController', function ($scope, UsersService, users, userImagePath, ColorService, FlashService) {
 
 	$scope.users = users.data; // get users form resolve in app.js
 	$scope.userImagePath = userImagePath;
@@ -76,13 +82,15 @@ app.controller('UsersController', function ($scope, UsersService, users, userIma
 	};
 	$scope.sendUser = function () {
 		UsersService.set ($scope.new_user).success (function (data) {
-			// TODO handle error
+			FlashService.show_response(data);
 			if (data && data.length > 0) {
 				$scope.users = $scope.users.concat(data);
 			}	
+		}).error (function (data) {
+			FlashService.show_response(data);
 		});
 	}
-
+	// TODO requests vereinheitlichen, deferred/promise APIs besser verstehen und nutzen
 	$scope.getUsers = function () {
 		UsersService.getUsers(function(err, data) {
 			if(err || !data)

@@ -1,13 +1,13 @@
 form.form-signin(ng-submit="login()", name="loginForm")
   .form-group
     h2
-      | Please sign in
+      | {{ 'TXT_SIGNIN' | translate }}
     .control-group(ng-class="{'has-error':loginForm.$invalid, 'has-success':!loginForm.$invalid}")
       .controls
-        input.form-control(type="email", name="email", placeholder="Email address", ng-model="credentials.email", required)
-        input.form-control(type="password",name="password", placeholder="Password", ng-model="credentials.password", required)
-  .checkbox
+        input.form-control(type="email", name="email", placeholder="{{ 'PLACEHOLDER_EMAIL' | translate }}", ng-model="credentials.email", required)
+        input.form-control(type="password",name="password", placeholder="{{ 'PLACEHOLDER_PWD' | translate }}", ng-model="credentials.password", required)
+    //- .checkbox
       label
         input(type="checkbox", value="remember-me", disabled)
-        | Remember me
-    button.btn.btn-lg.btn-primary.btn-block(type="submit", ng-disabled="loginForm.$invalid") Sign in
+        | {{ 'LBL_REMEMBER' | translate }}
+    button.btn.btn-lg.btn-primary.btn-block(type="submit", ng-disabled="loginForm.$invalid") {{ 'BTN_SIGNIN' | translate }}

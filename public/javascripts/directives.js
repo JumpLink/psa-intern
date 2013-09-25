@@ -47,3 +47,14 @@ app.directive("switchbutton", [function () {
 		}]
 	}
 }]);
+
+app.directive("flash", [function () {
+	return {
+		restrict: "E",
+		controller: ['$scope', '$element', 'FlashService', function ($scope, $element, FlashService) {
+			$scope.close = function() {
+				FlashService.clear();
+			}
+		}]
+	}
+}]);

@@ -75,7 +75,7 @@ function restrict (req, res, next) {
     next();
   } else {
     req.session.error = 'Access denied!';
-    res.json(401, {flash:'Please log in.'});
+    res.json(401, {flash:'Please log in.', type: 'danger'});
   }
 }
 
@@ -121,7 +121,7 @@ app.get ('/auth/logout', function(req, res){
 
   delete req.session.user;
   delete req.session.success;
-  res.json({flash: 'Logged Out!'});
+  res.json({flash: 'Logged Out!', type: 'success'});
  
 });
 
@@ -167,7 +167,7 @@ app.post ('/message', restrict, function(req, res) {
 
     db.saveMessage (msg, function (err, saved) {
       if (err || !saved) {
-        res.json (500, {flash: "There was an error saving your message from: "+msg.from+", timestamp: "+msg.timestamp});
+        res.json (500, {flash: "There was an error saving your message from: "+msg.from+", timestamp: "+msg.timestamp, type: 'danger'});
       } else {
         routes.messages.updates (req, res);
         //res.json(saved);
@@ -179,7 +179,7 @@ app.post ('/message/remove/:id', restrict, function(req, res) {
     debug(inspect({flash: "Removing the message with id: "+req.body._id}));
     db.removeMessage (req.body._id, function (err, numRemoved) {
       if (err) {
-        res.json (500, {flash: "There was an error removing the message with id: "+req.body._id+" error: "+err, numRemoved: numRemoved});
+        res.json (500, {flash: "There was an error removing the message with id: "+req.body._id+" error: "+err, type: 'danger', numRemoved: numRemoved});
       } else {
         routes.messages.updates (req, res);
       }
@@ -199,13 +199,13 @@ app.post ('/user', restrict, function(req, res) {
   // when you create a user, generate a salt and hash the password
   hash (req.body.password, function(err, salt, hash){
     if (err)
-      res.json (500, {flash: "There was an error saving the user: "+user.name});
+      res.json (500, {flash: "There was an error saving the user: "+user.name, type: 'danger'});
     user.salt = salt;
     user.hash = hash;
 
     db.saveUser(user, function (err, saved) {
       if (err)
-        res.json (500, {flash: "There was an error saving the user: "+user.name+" error: "+err});
+        res.json (500, {flash: "There was an error saving the user: "+user.name+" error: "+err, type: 'danger'});
       routes.users.updates (req, res);
     });
   });
@@ -228,14 +228,14 @@ app.post ('/user/:email', restrict, function(req, res) {
       debug(inspect({flash: "Updating the user: "+user.name, error: err, numReplaced: numReplaced, upsert: upsert}));
       if (err)
         res.json (500, {flash: "There was an error updating the user: "+user.name, numReplaced: numReplaced, upsert: upsert});
-      res.json({flash: "User updated", numReplaced: numReplaced, upsert: upsert})
+      res.json({flash: "User updated", type: 'success', numReplaced: numReplaced, upsert: upsert})
     });
   }
 
   if (typeof(req.body.password) != 'undefined' && req.body.password.length >= 6) {
     hash (req.body.password, function(err, salt, hash){
       if (err)
-        res.json (500, {flash: "There was an error saving the user: "+user.name});
+        res.json (500, {flash: "There was an error saving the user: "+user.name, type: 'danger'});
       user.salt = salt;
       user.hash = hash;
 
@@ -251,10 +251,10 @@ app.post ('/user/remove/:id', restrict, function(req, res) {
 
   var remove = function (user_id) {
     db.removeUserById(user_id, function (err, numRemoved) {
-      debug(inspect({flash: "Removing the user with id: "+user_id, numRemoved: numRemoved}));
+      debug(inspect({flash: "Removing the user with id: "+user_id, type: 'danger', numRemoved: numRemoved}));
       if (err)
         res.json (500, {flash: "There was an error removing the user with id: "+user_id, numRemoved: numRemoved});
-      res.json({flash: "User removed", user_id: user_id, numRemoved: numRemoved, numRemoved: numRemoved})
+      res.json({flash: "User removed", type: 'success', user_id: user_id, numRemoved: numRemoved, numRemoved: numRemoved})
     });
   }
 
@@ -285,7 +285,7 @@ app.post ('/auth/login', function(req, res){
       req.session.error = 'Authentication failed, please check your '
         + ' email and password.'
         + ' (use "tj" and "foobar")';
-      res.json(500, {flash: 'Invalid user or password'});
+      res.json(500, {flash: 'Invalid user or password', type: 'danger'});
     }
   });
 
