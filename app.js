@@ -141,7 +141,7 @@ app.post ('/upload/image', restrict, function(req, res) {
   // get the temporary location of the file
   var tmp_path = req.files.file.path;
   // set where the file should actually exists - in this case it is in the "images" directory
-  var target_path = target_folder+'/'+ req.headers['user_id'];
+  var target_path = target_folder+'/'+ req.headers['userid'];
   mkdirp(target_folder, function (err) {
       if (err) prerror(inspect (err));
       else {

@@ -44,7 +44,7 @@ app.controller('UserController', function($scope, $routeParams, $location, Users
 
 	$scope.uploader.bind('beforeupload', function (event, item) {
 		item.headers = $scope.uploader.headers;
-		item.headers['user_id'] = $scope.user._id;
+		item.headers['userid'] = $scope.user._id;
 	});
 
 	$scope.uploader.bind('complete', function (event, xhr, item) {
