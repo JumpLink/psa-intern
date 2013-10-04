@@ -27,7 +27,7 @@ app.directive("userimage", function (UserImageService) {
 				if (typeof($scope.username) != 'undefined' && $scope.username.length > 0)
 					$scope.symbol = $scope.username.charAt(0);
 			});
-			if (typeof($scope.color) == 'undefined' || $scope.color.length <= 0)
+			if (typeof($scope.color) == 'undefined' || $scope.color == null || $scope.color.length <= 0)
 				$scope.color = "white";
 		}
 	}
