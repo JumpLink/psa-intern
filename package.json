@@ -11,7 +11,7 @@
     "less-middleware": "~0.1.12",
     "pwd-base64": "~0.0.3",
     "debug": "~0.7.2",
-    "nedb": "~0.8.6",
+    "nedb": "0.x.x",
     "async": "~0.2.9",
     "mkdirp": "~0.3.5"
   }
